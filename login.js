@@ -253,6 +253,7 @@ function initLoginForm() {
 
 function initRegisterForm() {
   const form = document.getElementById("panel-register");
+  if (!form) return;
   const usernameInput = document.getElementById("register-username");
   const passwordInput = document.getElementById("register-password");
   const confirmInput = document.getElementById("register-confirm");
@@ -294,7 +295,7 @@ function initRegisterForm() {
 
     if (!ensureFirebaseReady(message)) return;
 
-    submitBtn.disabled = true;
+    if (submitBtn) submitBtn.disabled = true;
 
     try {
       const pseudo = usernameInput.value.trim();
@@ -315,16 +316,17 @@ function initRegisterForm() {
 
       setFormMessage(message, "Compte cree avec succes - vous etes connecte(e).", "success");
 
-      // ---> C'EST ICI QU'IL FAUT L'AJOUTER :
       setTimeout(() => {
         window.location.href = "dashboard.html";
-      }, 1500); // 1.5 secondes de pause pour lire le message, puis redirection
+      }, 1500);
 
     } catch (error) {
       setFormMessage(message, translateFirebaseError(error), "error");
     } finally {
-      submitBtn.disabled = false;
+      if (submitBtn) submitBtn.disabled = false;
     }
+  });
+}
 /* ==========================================================================
    7) MOT DE PASSE OUBLIE
    ========================================================================== */
