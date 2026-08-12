@@ -342,13 +342,6 @@ function initForgotPassword() {
 
 /* ==========================================================================
    8) CONNEXION DISCORD - preparation OAuth2 (sans backend pour l'instant)
-   ==========================================================================
-
-   Cette section prepare tout ce qu'il faut pour brancher, plus tard,
-   une vraie authentification Discord OAuth2 couplee a ton bot et a
-   Firebase (via un jeton personnalise genere par ton backend).
-   Aucun appel reseau reel n'est effectue tant que CLIENT_ID n'est pas
-   renseigne : voir l'explication fournie avec ce projet.
    ========================================================================== */
 
 const DISCORD_OAUTH_CONFIG = {
