@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intranet — Connexion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <div class="page">
+
+    <header class="topbar">
+      <div class="logo">
+        <span class="logo-dot"></span>
+        Intranet
+      </div>
+      <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Basculer entre thème clair et sombre">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="4.5"></circle>
+          <path d="M12 2.5v2.5M12 19v2.5M4.4 4.4l1.8 1.8M17.8 17.8l1.8 1.8M2.5 12H5M19 12h2.5M4.4 19.6l1.8-1.8M17.8 6.2l1.8-1.8"></path>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="17" height="17" fill="currentColor">
+          <path d="M20.4 14.7A8.7 8.7 0 0 1 9.3 3.6a.6.6 0 0 0-.75-.75A10 10 0 1 0 21.15 15.45a.6.6 0 0 0-.75-.75Z"></path>
+        </svg>
+      </button>
+    </header>
+
+    <main class="content-grid">
+
+      <section class="intro">
+        <span class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          RÉSEAU INTERNE
+        </span>
+        <div class="intro-main">
+          <span class="intro-bar"></span>
+          <div>
+            <h1 class="headline">Tout ce dont vous avez besoin, au même endroit.</h1>
+            <p class="lede">Connectez-vous pour retrouver vos documents, l'annuaire et les outils de l'entreprise.</p>
+          </div>
+        </div>
+
+        <ul class="toc">
+          <li>
+            <span class="toc-icon">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>
+            </span>
+            <span class="toc-label">Documents &amp; procédures internes</span>
+            <span class="toc-dots"></span>
+          </li>
+          <li>
+            <span class="toc-icon">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="17" cy="8" r="2.5"/><path d="M16 14.2c2.9.5 5 2.6 5 5.8"/></svg>
+            </span>
+            <span class="toc-label">Annuaire complet du personnel</span>
+            <span class="toc-dots"></span>
+          </li>
+          <li>
+            <span class="toc-icon">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 1-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 0 1 5.4-5.4l-2.7 2.7-2-2Z"/></svg>
+            </span>
+            <span class="toc-label">Demandes et support informatique</span>
+            <span class="toc-dots"></span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="auth-card">
+
+        <div class="tabs" role="tablist">
+          <button type="button" class="tab active" id="tab-login" role="tab" aria-selected="true">Connexion</button>
+          <button type="button" class="tab" id="tab-signup" role="tab" aria-selected="false">Inscription</button>
+        </div>
+
+        <div class="form-header">
+          <h2 id="form-title">Connexion</h2>
+          <p id="form-subtitle">Identifiez-vous avec votre compte de l'entreprise.</p>
+        </div>
+
+        <div id="alert-box" class="alert" hidden></div>
+
+        <form id="auth-form" novalidate>
+          <div class="field">
+            <label for="username">Nom d'utilisateur</label>
+            <input type="text" id="username" name="username" autocomplete="username" placeholder="jdupont" minlength="3" maxlength="20" required>
+          </div>
+
+          <div class="field">
+            <label for="password">Mot de passe</label>
+            <div class="password-row">
+              <input type="password" id="password" name="password" autocomplete="current-password" placeholder="••••••••" minlength="6" required>
+              <button type="button" id="toggle-password" class="toggle-password" aria-label="Afficher le mot de passe">Afficher</button>
+            </div>
+          </div>
+
+          <div class="field" id="confirm-field" hidden>
+            <label for="confirm-password">Confirmer le mot de passe</label>
+            <input type="password" id="confirm-password" name="confirm-password" autocomplete="new-password" placeholder="••••••••" minlength="6">
+          </div>
+
+          <div class="field-row" id="remember-row">
+            <label class="checkbox">
+              <input type="checkbox" id="remember">
+              <span>Se souvenir de moi</span>
+            </label>
+          </div>
+
+          <button type="submit" id="submit-btn" class="btn-primary">
+            <span class="btn-label">Se connecter</span>
+            <span class="spinner" hidden></span>
+          </button>
+        </form>
+
+        <div class="divider"><span>ou</span></div>
+
+        <a href="https://falling-hill-9b36.systeme-app.workers.dev/login-discord" id="discord-btn" class="btn-discord">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+    <path d="M20.317 4.369A19.79 19.79 0 0 0 15.885 3c-.22.4-.462.936-.635 1.36a18.27 18.27 0 0 0-5.5 0A9.29 9.29 0 0 0 9.115 3a19.73 19.73 0 0 0-4.432 1.37C1.67 8.69.964 12.9 1.317 17.05a19.9 19.9 0 0 0 5.993 3.03c.484-.66.916-1.36 1.288-2.096a12.9 12.9 0 0 1-2.03-.975c.17-.124.336-.253.497-.386 3.927 1.81 8.18 1.81 12.06 0 .163.133.328.262.497.386-.646.388-1.326.71-2.033.977.372.735.804 1.435 1.288 2.095a19.83 19.83 0 0 0 5.997-3.03c.417-4.83-.71-9-2.996-12.681ZM8.63 14.55c-1.183 0-2.15-1.09-2.15-2.43 0-1.34.947-2.43 2.15-2.43s2.17 1.1 2.15 2.43c0 1.34-.947 2.43-2.15 2.43Zm6.74 0c-1.183 0-2.15-1.09-2.15-2.43 0-1.34.947-2.43 2.15-2.43s2.17 1.1 2.15 2.43c0 1.34-.947 2.43-2.15 2.43Z"/>
+  </svg>
+  Se connecter via Discord
+</a>
+
+        <p class="form-note" id="form-note">Pas encore de compte ? Cliquez sur « Inscription » ci-dessus.</p>
+      </section>
+
+    </main>
+
+    <footer class="page-footer">Accès réservé au personnel autorisé — © 2026</footer>
+
+  </div>
+
+  <form onsubmit="handleLogin(event)">
+    <input type="text" id="username-input" placeholder="Nom d'utilisateur">
+    <input type="password" id="password-input" placeholder="Mot de passe">
+    <button type="submit">Se connecter</button>
+</form>
+
+<script>
+    async function handleLogin(event) {
+        event.preventDefault();
+        const userInput = document.getElementById("username-input").value.trim().toLowerCase();
+        const password = document.getElementById("password-input").value;
+        
+        const fakeEmail = `${userInput}@intranet-cd0ba.local`;
+        const apiKey = "AIzaSyAV7H3xoQTEFOLQhg_t1hqjEOas7zkJ37k";
+
+        const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: fakeEmail, password: password, returnSecureToken: true })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            window.location.href = `dashboard.html?token=${data.idToken}&user=${encodeURIComponent(userInput)}`;
+        } else {
+            alert("Erreur de connexion : " + (data.error?.message || "Identifiants incorrects"));
+        }
+    }
+</script>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
