@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenue sur ton Dashboard</h1>
+        <div id="user-info">
+            <p>Chargement de tes informations...</p>
+        </div>
+
+        <!-- Modale de liaison Discord (cachée par défaut) -->
+        <div id="discord-modal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <h2>Lier votre compte Discord</h2>
+                <p>Cliquez sur le bouton ci-dessous pour lier votre compte Discord et activer la connexion rapide.</p>
+                <button id="btn-link">Lier mon compte Discord</button>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="dashboard.js"></script>
+</body>
+</html>
