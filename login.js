@@ -1,7 +1,7 @@
 /* ==========================================================================
    INTRANET — LOGIN / REGISTER
    Theme, bascule des formulaires, validation, et connexion via Firebase
-   (pseudo Discord + mot de passe), plus configuration OAuth2 Discord.
+   (pseudo Discord + mot de passe), plus preparation de l'OAuth2 Discord.
    ========================================================================== */
 
 import { auth, db, isFirebaseConfigured } from "./firebase.js";
@@ -18,14 +18,6 @@ import {
   setDoc,
   serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-
-// --- CONFIGURATION DISCORD ---
-const DISCORD_OAUTH_CONFIG = {
-  clientId: "1522661512412659772",
-  redirectUri: "https://orion-153.github.io/Aura_Intranet/dashboard.html",
-  scope: ["identify"],
-  endpoint: "https://discord.com/oauth2/authorize",
-};
 
 document.addEventListener("DOMContentLoaded", () => {
   initThemeToggle();
@@ -44,7 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
 function initThemeToggle() {
   const STORAGE_KEY = "intranet-theme";
   const toggleBtn = document.getElementById("theme-toggle");
-  if (!toggleBtn) return;
   const root = document.documentElement;
 
   const applyTheme = (theme) => {
@@ -85,8 +76,6 @@ function initPanelSwitching() {
   const switchToRegister = document.getElementById("switch-to-register");
   const switchToLogin = document.getElementById("switch-to-login");
 
-  if (!panelLogin || !panelRegister) return;
-
   const copy = {
     login: {
       title: "Content de vous revoir",
@@ -104,15 +93,15 @@ function initPanelSwitching() {
     panelLogin.classList.toggle("is-active", isLogin);
     panelRegister.classList.toggle("is-active", !isLogin);
 
-    if (title) title.textContent = isLogin ? copy.login.title : copy.register.title;
-    if (subtitle) subtitle.textContent = isLogin ? copy.login.subtitle : copy.register.subtitle;
+    title.textContent = isLogin ? copy.login.title : copy.register.title;
+    subtitle.textContent = isLogin ? copy.login.subtitle : copy.register.subtitle;
 
     const firstInput = (isLogin ? panelLogin : panelRegister).querySelector("input");
     if (firstInput) firstInput.focus({ preventScroll: true });
   }
 
-  if (switchToRegister) switchToRegister.addEventListener("click", () => showPanel("register"));
-  if (switchToLogin) switchToLogin.addEventListener("click", () => showPanel("login"));
+  switchToRegister.addEventListener("click", () => showPanel("register"));
+  switchToLogin.addEventListener("click", () => showPanel("login"));
 }
 
 /* ==========================================================================
@@ -124,7 +113,6 @@ function initPasswordVisibilityToggles() {
     btn.addEventListener("click", () => {
       const targetId = btn.getAttribute("data-target");
       const input = document.getElementById(targetId);
-      if (!input) return;
       const isHidden = input.type === "password";
 
       input.type = isHidden ? "text" : "password";
@@ -138,25 +126,27 @@ function initPasswordVisibilityToggles() {
    ========================================================================== */
 
 const DISCORD_USERNAME_REGEX = /^[a-z0-9._]{2,32}$/i;
-const PSEUDO_EMAIL_DOMAIN = "pseudo.intranet.local";
 
+const PSEUDO_EMAIL_DOMAIN = "pseudo.intranet.local";
 function pseudoToTechnicalEmail(pseudo) {
   return `${pseudo.trim().toLowerCase()}@${PSEUDO_EMAIL_DOMAIN}`;
 }
 
 function setFieldError(inputId, message) {
   const input = document.getElementById(inputId);
-  if (!input) return;
   const field = input.closest(".field");
-  if (!field) return;
   const errorEl = field.querySelector(`[data-error-for="${inputId}"]`);
 
   if (message) {
     field.classList.add("has-error");
-    if (errorEl) errorEl.textContent = message;
+    errorEl.textContent = message;
+    const control = field.querySelector(".field__control");
+    control.style.animation = "none";
+    control.offsetHeight;
+    control.style.animation = "";
   } else {
     field.classList.remove("has-error");
-    if (errorEl) errorEl.textContent = "";
+    errorEl.textContent = "";
   }
 }
 
@@ -165,7 +155,6 @@ function clearFieldErrors(...inputIds) {
 }
 
 function setFormMessage(messageEl, text, type) {
-  if (!messageEl) return;
   messageEl.textContent = text;
   messageEl.classList.remove("is-error", "is-success", "is-info", "is-visible");
 
@@ -205,7 +194,6 @@ function ensureFirebaseReady(messageEl) {
 
 function initLoginForm() {
   const form = document.getElementById("panel-login");
-  if (!form) return;
   const identifierInput = document.getElementById("login-identifier");
   const passwordInput = document.getElementById("login-password");
   const rememberInput = document.getElementById("remember-me");
@@ -236,12 +224,12 @@ function initLoginForm() {
 
     if (!ensureFirebaseReady(message)) return;
 
-    if (submitBtn) submitBtn.disabled = true;
+    submitBtn.disabled = true;
 
     try {
       await setPersistence(
         auth,
-        rememberInput && rememberInput.checked ? browserLocalPersistence : browserSessionPersistence
+        rememberInput.checked ? browserLocalPersistence : browserSessionPersistence
       );
 
       await signInWithEmailAndPassword(
@@ -250,12 +238,11 @@ function initLoginForm() {
         passwordInput.value
       );
 
-      setFormMessage(message, "Connexion reussie - redirection...", "success");
-      window.location.href = "dashboard.html";
+      setFormMessage(message, "Connexion reussie - redirection a venir vers le dashboard.", "success");
     } catch (error) {
       setFormMessage(message, translateFirebaseError(error), "error");
     } finally {
-      if (submitBtn) submitBtn.disabled = false;
+      submitBtn.disabled = false;
     }
   });
 }
@@ -266,7 +253,6 @@ function initLoginForm() {
 
 function initRegisterForm() {
   const form = document.getElementById("panel-register");
-  if (!form) return;
   const usernameInput = document.getElementById("register-username");
   const passwordInput = document.getElementById("register-password");
   const confirmInput = document.getElementById("register-confirm");
@@ -308,7 +294,7 @@ function initRegisterForm() {
 
     if (!ensureFirebaseReady(message)) return;
 
-    if (submitBtn) submitBtn.disabled = true;
+    submitBtn.disabled = true;
 
     try {
       const pseudo = usernameInput.value.trim();
@@ -324,15 +310,14 @@ function initRegisterForm() {
       await setDoc(doc(db, "users", credential.user.uid), {
         pseudo,
         createdAt: serverTimestamp(),
-        discordId: null,
+        discordLinked: false,
       });
 
-      setFormMessage(message, "Compte cree avec succes - redirection...", "success");
-      window.location.href = "dashboard.html";
+      setFormMessage(message, "Compte cree avec succes - vous etes connecte(e).", "success");
     } catch (error) {
       setFormMessage(message, translateFirebaseError(error), "error");
     } finally {
-      if (submitBtn) submitBtn.disabled = false;
+      submitBtn.disabled = false;
     }
   });
 }
@@ -345,21 +330,26 @@ function initForgotPassword() {
   const link = document.getElementById("forgot-password");
   const message = document.getElementById("login-message");
 
-  if (!link) return;
-
   link.addEventListener("click", (event) => {
     event.preventDefault();
     setFormMessage(
       message,
-      "La recuperation de mot de passe necessite un e-mail associe au compte : page non creee pour l'instant.",
+      "La recuperation de mot de passe necessite un e-mail associe au compte (a ajouter plus tard si besoin) : page non creee pour l'instant.",
       "info"
     );
   });
 }
 
 /* ==========================================================================
-   8) CONNEXION DISCORD (OAuth2)
+   8) CONNEXION DISCORD - OAuth2
    ========================================================================== */
+
+const DISCORD_OAUTH_CONFIG = {
+  clientId: "1522661512412659772",
+  redirectUri: "https://orion-153.github.io/Aura_Intranet/dashboard.html",
+  scope: ["identify"],
+  endpoint: "https://discord.com/api/oauth2/authorize",
+};
 
 function buildDiscordAuthUrl(config) {
   const params = new URLSearchParams({
