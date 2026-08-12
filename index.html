@@ -14,16 +14,12 @@
   />
 
   <!-- Feuille de style -->
- <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="../CSS/login.css" />
 </head>
 <body>
 
-  <!-- Fond animé (halos de dégradé très discrets) -->
-  <div class="aurora" aria-hidden="true">
-    <span class="aurora__blob aurora__blob--one"></span>
-    <span class="aurora__blob aurora__blob--two"></span>
-    <span class="aurora__blob aurora__blob--three"></span>
-  </div>
+  <!-- Fond : halo conique animé + grille de points -->
+  <div class="halo" aria-hidden="true"></div>
   <div class="grid-overlay" aria-hidden="true"></div>
 
   <!-- Bouton de thème -->
@@ -63,37 +59,17 @@
           <span class="brand__name">Intranet</span>
         </div>
         <h1 class="card__title" id="form-title">Content de vous revoir</h1>
-        <p class="card__subtitle" id="form-subtitle">Connectez-vous pour accéder à votre espace</p>
+        <p class="card__subtitle" id="form-subtitle">Connectez-vous avec votre pseudo Discord</p>
       </header>
 
-      <!-- Bascule Connexion / Inscription -->
-      <div class="tabs" role="tablist" aria-label="Choix du formulaire">
-        <button class="tabs__btn is-active" id="tab-login" role="tab" aria-selected="true" aria-controls="panel-login" type="button">
-          Connexion
-        </button>
-        <button class="tabs__btn" id="tab-register" role="tab" aria-selected="false" aria-controls="panel-register" type="button">
-          Inscription
-        </button>
-        <span class="tabs__indicator" aria-hidden="true"></span>
-      </div>
-
-      <!-- Bouton Discord -->
-      <button id="discord-login" class="btn btn--discord" type="button">
-        <svg class="discord-icon" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true">
-          <path fill="currentColor" d="M20.3 5.4a17.7 17.7 0 0 0-4.4-1.4l-.2.4a15.9 15.9 0 0 0-1.4 0 12 12 0 0 0-3.9 0 15.9 15.9 0 0 0-1.4 0l-.2-.4a17.6 17.6 0 0 0-4.4 1.4C1.6 9 .9 12.5 1.2 16a17.9 17.9 0 0 0 5.4 2.7c.4-.6.8-1.2 1.1-1.9a11.5 11.5 0 0 1-1.8-.9l.4-.3a12.7 12.7 0 0 0 10.9 0l.4.3a11.5 11.5 0 0 1-1.8.9c.3.7.7 1.3 1.1 1.9A17.9 17.9 0 0 0 22.8 16c.4-4.1-.7-7.6-2.5-10.6ZM8.7 13.9c-.8 0-1.5-.8-1.5-1.7 0-1 .6-1.7 1.5-1.7s1.5.8 1.5 1.7-.7 1.7-1.5 1.7Zm6.6 0c-.8 0-1.5-.8-1.5-1.7 0-1 .6-1.7 1.5-1.7s1.5.8 1.5 1.7-.6 1.7-1.5 1.7Z"/>
-        </svg>
-        <span>Continuer avec Discord</span>
-      </button>
-
-      <div class="divider"><span>ou</span></div>
-
       <!-- ============ FORMULAIRE : CONNEXION ============ -->
-      <form id="panel-login" class="panel is-active" role="tabpanel" aria-labelledby="tab-login" novalidate>
+      <form id="panel-login" class="panel is-active" novalidate>
 
         <div class="field">
-          <label for="login-identifier">Adresse e-mail ou pseudo</label>
+          <label for="login-identifier">Pseudo Discord</label>
           <div class="field__control">
-            <input type="text" id="login-identifier" name="identifier" autocomplete="username" placeholder="ex. clara@mail.com" />
+            <span class="field__prefix">@</span>
+            <input type="text" id="login-identifier" name="identifier" autocomplete="username" placeholder="votre_pseudo" />
           </div>
           <p class="field__error" data-error-for="login-identifier"></p>
         </div>
@@ -126,25 +102,32 @@
         <button type="submit" class="btn btn--primary">
           <span>Se connecter</span>
         </button>
+
+        <div class="divider"><span>ou</span></div>
+
+        <button type="button" class="btn btn--discord" data-discord-trigger>
+          <svg class="discord-icon" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true">
+            <path fill="currentColor" d="M20.3 5.4a17.7 17.7 0 0 0-4.4-1.4l-.2.4a15.9 15.9 0 0 0-1.4 0 12 12 0 0 0-3.9 0 15.9 15.9 0 0 0-1.4 0l-.2-.4a17.6 17.6 0 0 0-4.4 1.4C1.6 9 .9 12.5 1.2 16a17.9 17.9 0 0 0 5.4 2.7c.4-.6.8-1.2 1.1-1.9a11.5 11.5 0 0 1-1.8-.9l.4-.3a12.7 12.7 0 0 0 10.9 0l.4.3a11.5 11.5 0 0 1-1.8.9c.3.7.7 1.3 1.1 1.9A17.9 17.9 0 0 0 22.8 16c.4-4.1-.7-7.6-2.5-10.6ZM8.7 13.9c-.8 0-1.5-.8-1.5-1.7 0-1 .6-1.7 1.5-1.7s1.5.8 1.5 1.7-.7 1.7-1.5 1.7Zm6.6 0c-.8 0-1.5-.8-1.5-1.7 0-1 .6-1.7 1.5-1.7s1.5.8 1.5 1.7-.6 1.7-1.5 1.7Z"/>
+          </svg>
+          <span>Continuer avec Discord</span>
+        </button>
+
+        <p class="card__footer">
+          Pas encore de compte ?
+          <button type="button" class="link-strong" id="switch-to-register">Créer un compte</button>
+        </p>
       </form>
 
       <!-- ============ FORMULAIRE : INSCRIPTION ============ -->
-      <form id="panel-register" class="panel" role="tabpanel" aria-labelledby="tab-register" novalidate>
+      <form id="panel-register" class="panel" novalidate>
 
         <div class="field">
-          <label for="register-username">Pseudo</label>
+          <label for="register-username">Pseudo Discord</label>
           <div class="field__control">
-            <input type="text" id="register-username" name="username" autocomplete="nickname" placeholder="ex. Clara" />
+            <span class="field__prefix">@</span>
+            <input type="text" id="register-username" name="username" autocomplete="nickname" placeholder="votre_pseudo" />
           </div>
           <p class="field__error" data-error-for="register-username"></p>
-        </div>
-
-        <div class="field">
-          <label for="register-email">Adresse e-mail</label>
-          <div class="field__control">
-            <input type="email" id="register-email" name="email" autocomplete="email" placeholder="ex. clara@mail.com" />
-          </div>
-          <p class="field__error" data-error-for="register-email"></p>
         </div>
 
         <div class="field">
@@ -180,21 +163,26 @@
         <button type="submit" class="btn btn--primary">
           <span>Créer mon compte</span>
         </button>
-      </form>
 
-      <p class="card__footer">
-        <span id="footer-login-text">Pas encore de compte ?
-          <button type="button" class="link-strong" id="switch-to-register">Créer un compte</button>
-        </span>
-        <span id="footer-register-text" hidden>Déjà inscrit ?
+        <div class="divider"><span>ou</span></div>
+
+        <button type="button" class="btn btn--discord" data-discord-trigger>
+          <svg class="discord-icon" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true">
+            <path fill="currentColor" d="M20.3 5.4a17.7 17.7 0 0 0-4.4-1.4l-.2.4a15.9 15.9 0 0 0-1.4 0 12 12 0 0 0-3.9 0 15.9 15.9 0 0 0-1.4 0l-.2-.4a17.6 17.6 0 0 0-4.4 1.4C1.6 9 .9 12.5 1.2 16a17.9 17.9 0 0 0 5.4 2.7c.4-.6.8-1.2 1.1-1.9a11.5 11.5 0 0 1-1.8-.9l.4-.3a12.7 12.7 0 0 0 10.9 0l.4.3a11.5 11.5 0 0 1-1.8.9c.3.7.7 1.3 1.1 1.9A17.9 17.9 0 0 0 22.8 16c.4-4.1-.7-7.6-2.5-10.6ZM8.7 13.9c-.8 0-1.5-.8-1.5-1.7 0-1 .6-1.7 1.5-1.7s1.5.8 1.5 1.7-.7 1.7-1.5 1.7Zm6.6 0c-.8 0-1.5-.8-1.5-1.7 0-1 .6-1.7 1.5-1.7s1.5.8 1.5 1.7-.6 1.7-1.5 1.7Z"/>
+          </svg>
+          <span>Continuer avec Discord</span>
+        </button>
+
+        <p class="card__footer">
+          Déjà inscrit ?
           <button type="button" class="link-strong" id="switch-to-login">Se connecter</button>
-        </span>
-      </p>
+        </p>
+      </form>
 
     </section>
   </main>
 
-  <!-- Script -->
-  <script type="module" src="login.js"></script>
+  <!-- Script (module : permet d'importer Firebase) -->
+  <script type="module" src="../JS/login.js"></script>
 </body>
 </html>
