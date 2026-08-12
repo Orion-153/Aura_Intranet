@@ -1,0 +1,672 @@
+/* ==========================================================================
+   INTRANET — LOGIN / REGISTER
+   Palette : Indigo Aurora (#5B5FEF → #8B7CF6) sur fonds neutres profonds/clairs
+   Polices : Sora (titres) + Inter (interface)
+   ========================================================================== */
+
+:root {
+  /* --- Accent (identique dans les deux thèmes) --- */
+  --accent: #5b5fef;
+  --accent-2: #8b7cf6;
+  --accent-soft: rgba(91, 95, 239, 0.14);
+  --accent-gradient: linear-gradient(135deg, var(--accent), var(--accent-2));
+  --success: #34d399;
+  --danger: #f76c6c;
+  --discord: #5865f2;
+
+  /* --- Thème clair (par défaut) ---
+     La carte doit se détacher nettement du fond, et les contours
+     doivent rester visibles même sans ombre portée. */
+  --bg: #e9e6df;
+  --halo-opacity: 0.22;
+  --surface: rgba(255, 255, 255, 0.86);
+  --surface-solid: #ffffff;
+  --surface-alt: #f3f1eb;
+  --border: rgba(24, 22, 18, 0.14);
+  --border-strong: rgba(24, 22, 18, 0.24);
+  --text: #1a1b1f;
+  --text-muted: #63666d;
+  --text-faint: #94979e;
+  --shadow-card: 0 24px 60px -22px rgba(40, 38, 30, 0.35), 0 0 0 1px rgba(24, 22, 18, 0.05);
+  --input-bg: #f4f2ec;
+
+  /* --- Rayons / rythme --- */
+  --radius-lg: 26px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  --bg: #0d0e12;
+  --halo-opacity: 0.4;
+  --surface: rgba(24, 25, 31, 0.72);
+  --surface-solid: #16171c;
+  --surface-alt: #1c1d24;
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --text: #f3f3f5;
+  --text-muted: #9a9da6;
+  --text-faint: #6b6e77;
+  --shadow-card: 0 30px 80px -20px rgba(0, 0, 0, 0.55);
+  --input-bg: rgba(255, 255, 255, 0.045);
+}
+
+/* ==========================================================================
+   RESET
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background var(--transition), color var(--transition);
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+/* ==========================================================================
+   FOND — halo conique tournant + grille de points
+   Élément signature : un anneau de dégradé conique très flouté, qui
+   tourne lentement derrière la carte. Plus discret et plus personnel
+   que les habituels "blobs" flous.
+   ========================================================================== */
+
+.halo {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 900px;
+  height: 900px;
+  transform: translate(-50%, -50%) rotate(0deg);
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    var(--accent) 0deg,
+    transparent 70deg,
+    var(--accent-2) 150deg,
+    transparent 210deg,
+    var(--success) 270deg,
+    transparent 330deg,
+    var(--accent) 360deg
+  );
+  filter: blur(130px);
+  opacity: var(--halo-opacity);
+  z-index: 0;
+  pointer-events: none;
+  animation: halo-spin 50s linear infinite;
+  transition: opacity var(--transition);
+}
+
+@keyframes halo-spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(var(--border-strong) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: radial-gradient(circle at 50% 35%, black 0%, transparent 68%);
+  opacity: 0.55;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .halo {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   BASCULE DE THÈME
+   ========================================================================== */
+
+.theme-toggle {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 10;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.theme-toggle__track {
+  display: flex;
+  align-items: center;
+  width: 56px;
+  height: 32px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--surface-solid);
+  border: 1.5px solid var(--border-strong);
+  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.2);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.theme-toggle__thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  color: #fff;
+  transform: translateX(0);
+  transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+[data-theme="dark"] .theme-toggle__thumb {
+  transform: translateX(24px);
+}
+
+.theme-toggle .icon {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.icon-sun {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.icon-moon {
+  opacity: 0;
+  transform: scale(0.5) rotate(-40deg);
+}
+
+[data-theme="dark"] .icon-sun {
+  opacity: 0;
+  transform: scale(0.5) rotate(40deg);
+}
+
+[data-theme="dark"] .icon-moon {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+/* ==========================================================================
+   MISE EN PAGE
+   ========================================================================== */
+
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 36px 34px 30px;
+  animation: card-in 560ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ==========================================================================
+   EN-TÊTE / MARQUE
+   ========================================================================== */
+
+.card__header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.brand__mark {
+  display: flex;
+  filter: drop-shadow(0 6px 14px rgba(91, 95, 239, 0.35));
+}
+
+.brand__name {
+  font-family: "Sora", sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  color: var(--text);
+}
+
+.card__title {
+  font-family: "Sora", sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: -0.01em;
+  transition: opacity 180ms ease;
+}
+
+.card__subtitle {
+  margin-top: 8px;
+  font-size: 14.5px;
+  color: var(--text-muted);
+  transition: opacity 180ms ease;
+}
+
+/* ==========================================================================
+   BOUTONS
+   ========================================================================== */
+
+.btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: var(--radius-md);
+  font-size: 14.5px;
+  font-weight: 600;
+  padding: 13px 16px;
+  border: 1.5px solid transparent;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition), border-color var(--transition), filter var(--transition);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn--primary {
+  background: var(--accent-gradient);
+  color: #fff;
+  box-shadow: 0 12px 24px -10px rgba(91, 95, 239, 0.55);
+}
+
+.btn--primary:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 16px 30px -10px rgba(91, 95, 239, 0.6);
+}
+
+.btn--discord {
+  background: var(--surface-alt);
+  color: var(--text);
+  border: 1.5px solid var(--border-strong);
+}
+
+.btn--discord:hover {
+  border-color: var(--discord);
+  color: var(--discord);
+  box-shadow: 0 10px 22px -12px rgba(88, 101, 242, 0.45);
+}
+
+.discord-icon {
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   SÉPARATEUR
+   ========================================================================== */
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  color: var(--text-faint);
+  font-size: 12.5px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border-strong);
+}
+
+/* ==========================================================================
+   FORMULAIRES
+   ========================================================================== */
+
+.panel {
+  display: none;
+  flex-direction: column;
+}
+
+.panel.is-active {
+  display: flex;
+  animation: panel-in 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+}
+
+.field__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-strong);
+  background: var(--input-bg);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.field__control:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+  background: var(--surface-solid);
+}
+
+.field__prefix {
+  padding-left: 14px;
+  color: var(--text-faint);
+  font-weight: 600;
+  font-size: 14.5px;
+  user-select: none;
+}
+
+.field__control input {
+  width: 100%;
+  padding: 12px 14px;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 14.5px;
+  color: var(--text);
+}
+
+.field__control input::placeholder {
+  color: var(--text-faint);
+}
+
+.field.has-error .field__control {
+  border-color: var(--danger);
+  animation: shake 320ms ease;
+}
+
+.field.has-error .field__control:focus-within {
+  box-shadow: 0 0 0 4px rgba(247, 108, 108, 0.16);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.field__error {
+  min-height: 16px;
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  color: var(--danger);
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.field.has-error .field__error {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.field__toggle-visibility {
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  color: var(--text-faint);
+  display: flex;
+  transition: color var(--transition);
+}
+
+.field__toggle-visibility:hover {
+  color: var(--text);
+}
+
+/* ==========================================================================
+   LIGNE OPTIONS (se souvenir / mot de passe oublié)
+   ========================================================================== */
+
+.field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox__box {
+  width: 17px;
+  height: 17px;
+  border-radius: 5px;
+  border: 1.5px solid var(--border-strong);
+  background: var(--input-bg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.checkbox__box::after {
+  content: "";
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) scale(0);
+  transition: transform 160ms cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: -1px;
+}
+
+.checkbox input:checked + .checkbox__box {
+  background: var(--accent-gradient);
+  border-color: transparent;
+}
+
+.checkbox input:checked + .checkbox__box::after {
+  transform: rotate(-45deg) scale(1);
+}
+
+.checkbox input:focus-visible + .checkbox__box {
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.link-subtle {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.link-subtle:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.link-strong {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transition);
+}
+
+.link-strong:hover {
+  border-color: var(--accent);
+}
+
+/* ==========================================================================
+   MESSAGES DE FORMULAIRE
+   ========================================================================== */
+
+.form-message {
+  min-height: 0;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  transition: all 200ms ease;
+  overflow: hidden;
+}
+
+.form-message.is-visible {
+  min-height: 20px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+}
+
+.form-message.is-error {
+  background: rgba(247, 108, 108, 0.1);
+  color: var(--danger);
+  border: 1px solid rgba(247, 108, 108, 0.25);
+}
+
+.form-message.is-success {
+  background: rgba(52, 211, 153, 0.1);
+  color: var(--success);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+}
+
+.form-message.is-info {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid rgba(91, 95, 239, 0.25);
+}
+
+/* ==========================================================================
+   PIED DE CARTE
+   ========================================================================== */
+
+.card__footer {
+  text-align: center;
+  margin-top: 4px;
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .card {
+    padding: 28px 22px 24px;
+    border-radius: 20px;
+  }
+
+  .card__title {
+    font-size: 21px;
+  }
+
+  .theme-toggle {
+    top: 16px;
+    right: 16px;
+  }
+
+  .halo {
+    width: 640px;
+    height: 640px;
+    filter: blur(90px);
+  }
+}
+
+@media (max-width: 360px) {
+  .field-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
