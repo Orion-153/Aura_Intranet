@@ -314,14 +314,17 @@ function initRegisterForm() {
       });
 
       setFormMessage(message, "Compte cree avec succes - vous etes connecte(e).", "success");
+
+      // ---> C'EST ICI QU'IL FAUT L'AJOUTER :
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 1500); // 1.5 secondes de pause pour lire le message, puis redirection
+
     } catch (error) {
       setFormMessage(message, translateFirebaseError(error), "error");
     } finally {
       submitBtn.disabled = false;
     }
-  });
-}
-
 /* ==========================================================================
    7) MOT DE PASSE OUBLIE
    ========================================================================== */
