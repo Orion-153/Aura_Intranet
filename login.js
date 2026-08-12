@@ -341,13 +341,20 @@ function initForgotPassword() {
 }
 
 /* ==========================================================================
-   8) CONNEXION DISCORD - OAuth2
+   8) CONNEXION DISCORD - preparation OAuth2 (sans backend pour l'instant)
+   ==========================================================================
+
+   Cette section prepare tout ce qu'il faut pour brancher, plus tard,
+   une vraie authentification Discord OAuth2 couplee a ton bot et a
+   Firebase (via un jeton personnalise genere par ton backend).
+   Aucun appel reseau reel n'est effectue tant que CLIENT_ID n'est pas
+   renseigne : voir l'explication fournie avec ce projet.
    ========================================================================== */
 
 const DISCORD_OAUTH_CONFIG = {
-  clientId: "1522661512412659772",
-  redirectUri: "https://orion-153.github.io/Aura_Intranet/dashboard.html",
-  scope: ["identify"],
+  clientId: "VOTRE_CLIENT_ID_DISCORD",
+  redirectUri: "https://VOTRE_REGION-VOTRE_PROJET.cloudfunctions.net/discordAuthCallback",
+  scope: ["identify", "email", "guilds"],
   endpoint: "https://discord.com/api/oauth2/authorize",
 };
 
@@ -357,6 +364,7 @@ function buildDiscordAuthUrl(config) {
     redirect_uri: config.redirectUri,
     response_type: "code",
     scope: config.scope.join(" "),
+    prompt: "consent",
   });
 
   return `${config.endpoint}?${params.toString()}`;
@@ -364,9 +372,23 @@ function buildDiscordAuthUrl(config) {
 
 function initDiscordLogin() {
   const buttons = document.querySelectorAll("[data-discord-trigger]");
+  const loginMessage = document.getElementById("login-message");
+  const registerMessage = document.getElementById("register-message");
 
   buttons.forEach((btn) => {
     btn.addEventListener("click", () => {
+      const message = btn.closest("#panel-register") ? registerMessage : loginMessage;
+      const isConfigured = DISCORD_OAUTH_CONFIG.clientId !== "VOTRE_CLIENT_ID_DISCORD";
+
+      if (!isConfigured) {
+        setFormMessage(
+          message,
+          "Connexion Discord non configuree pour le moment (voir la section OAuth2 dans JS/login.js et les explications fournies).",
+          "info"
+        );
+        return;
+      }
+
       window.location.href = buildDiscordAuthUrl(DISCORD_OAUTH_CONFIG);
     });
   });
