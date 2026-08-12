@@ -14,21 +14,21 @@
   --danger: #f76c6c;
   --discord: #5865f2;
 
-  /* --- Thème clair (par défaut) --- */
-  --bg: #f5f3ef;
-  --bg-blob-1: rgba(91, 95, 239, 0.16);
-  --bg-blob-2: rgba(139, 124, 246, 0.14);
-  --bg-blob-3: rgba(52, 211, 153, 0.10);
-  --surface: rgba(255, 255, 255, 0.72);
+  /* --- Thème clair (par défaut) ---
+     La carte doit se détacher nettement du fond, et les contours
+     doivent rester visibles même sans ombre portée. */
+  --bg: #e9e6df;
+  --halo-opacity: 0.22;
+  --surface: rgba(255, 255, 255, 0.86);
   --surface-solid: #ffffff;
-  --surface-alt: #fbfaf7;
-  --border: rgba(20, 20, 30, 0.09);
-  --border-strong: rgba(20, 20, 30, 0.14);
+  --surface-alt: #f3f1eb;
+  --border: rgba(24, 22, 18, 0.14);
+  --border-strong: rgba(24, 22, 18, 0.24);
   --text: #1a1b1f;
-  --text-muted: #6b6f76;
-  --text-faint: #9a9da4;
-  --shadow-card: 0 20px 60px -20px rgba(30, 30, 60, 0.22);
-  --input-bg: rgba(20, 20, 30, 0.03);
+  --text-muted: #63666d;
+  --text-faint: #94979e;
+  --shadow-card: 0 24px 60px -22px rgba(40, 38, 30, 0.35), 0 0 0 1px rgba(24, 22, 18, 0.05);
+  --input-bg: #f4f2ec;
 
   /* --- Rayons / rythme --- */
   --radius-lg: 26px;
@@ -39,19 +39,17 @@
 
 [data-theme="dark"] {
   --bg: #0d0e12;
-  --bg-blob-1: rgba(91, 95, 239, 0.28);
-  --bg-blob-2: rgba(139, 124, 246, 0.22);
-  --bg-blob-3: rgba(52, 211, 153, 0.14);
+  --halo-opacity: 0.4;
   --surface: rgba(24, 25, 31, 0.72);
   --surface-solid: #16171c;
   --surface-alt: #1c1d24;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.14);
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.16);
   --text: #f3f3f5;
   --text-muted: #9a9da6;
   --text-faint: #6b6e77;
   --shadow-card: 0 30px 80px -20px rgba(0, 0, 0, 0.55);
-  --input-bg: rgba(255, 255, 255, 0.035);
+  --input-bg: rgba(255, 255, 255, 0.045);
 }
 
 /* ==========================================================================
@@ -98,60 +96,41 @@ a {
 }
 
 /* ==========================================================================
-   FOND — halos animés + grille discrète
+   FOND — halo conique tournant + grille de points
+   Élément signature : un anneau de dégradé conique très flouté, qui
+   tourne lentement derrière la carte. Plus discret et plus personnel
+   que les habituels "blobs" flous.
    ========================================================================== */
 
-.aurora {
+.halo {
   position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.aurora__blob {
-  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 900px;
+  height: 900px;
+  transform: translate(-50%, -50%) rotate(0deg);
   border-radius: 50%;
-  filter: blur(70px);
-  opacity: 0.9;
-  animation: drift 22s ease-in-out infinite alternate;
+  background: conic-gradient(
+    from 0deg,
+    var(--accent) 0deg,
+    transparent 70deg,
+    var(--accent-2) 150deg,
+    transparent 210deg,
+    var(--success) 270deg,
+    transparent 330deg,
+    var(--accent) 360deg
+  );
+  filter: blur(130px);
+  opacity: var(--halo-opacity);
+  z-index: 0;
+  pointer-events: none;
+  animation: halo-spin 50s linear infinite;
+  transition: opacity var(--transition);
 }
 
-.aurora__blob--one {
-  width: 480px;
-  height: 480px;
-  top: -160px;
-  left: -120px;
-  background: var(--bg-blob-1);
-  animation-duration: 26s;
-}
-
-.aurora__blob--two {
-  width: 420px;
-  height: 420px;
-  bottom: -140px;
-  right: -100px;
-  background: var(--bg-blob-2);
-  animation-duration: 30s;
-  animation-delay: -6s;
-}
-
-.aurora__blob--three {
-  width: 320px;
-  height: 320px;
-  bottom: 10%;
-  left: 8%;
-  background: var(--bg-blob-3);
-  animation-duration: 24s;
-  animation-delay: -12s;
-}
-
-@keyframes drift {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-  100% {
-    transform: translate(40px, 30px) scale(1.08);
+@keyframes halo-spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
   }
 }
 
@@ -162,12 +141,12 @@ a {
   pointer-events: none;
   background-image: radial-gradient(var(--border-strong) 1px, transparent 1px);
   background-size: 34px 34px;
-  mask-image: radial-gradient(circle at 50% 35%, black 0%, transparent 72%);
-  opacity: 0.5;
+  mask-image: radial-gradient(circle at 50% 35%, black 0%, transparent 68%);
+  opacity: 0.55;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .aurora__blob {
+  .halo {
     animation: none;
   }
 }
@@ -194,8 +173,8 @@ a {
   padding: 3px;
   border-radius: 999px;
   background: var(--surface-solid);
-  border: 1px solid var(--border-strong);
-  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.25);
+  border: 1.5px solid var(--border-strong);
+  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.2);
   transition: background var(--transition), border-color var(--transition);
 }
 
@@ -265,7 +244,7 @@ a {
   background: var(--surface);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border-strong);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   padding: 36px 34px 30px;
@@ -328,54 +307,6 @@ a {
 }
 
 /* ==========================================================================
-   TABS (Connexion / Inscription)
-   ========================================================================== */
-
-.tabs {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  background: var(--input-bg);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 4px;
-  margin-bottom: 22px;
-}
-
-.tabs__btn {
-  position: relative;
-  z-index: 2;
-  background: none;
-  border: none;
-  padding: 9px 10px;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--text-muted);
-  border-radius: 999px;
-  transition: color var(--transition);
-}
-
-.tabs__btn.is-active {
-  color: #ffffff;
-}
-
-.tabs__indicator {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: calc(50% - 4px);
-  height: calc(100% - 8px);
-  border-radius: 999px;
-  background: var(--accent-gradient);
-  box-shadow: 0 6px 16px -6px rgba(91, 95, 239, 0.55);
-  transition: transform 320ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.tabs[data-active="register"] .tabs__indicator {
-  transform: translateX(100%);
-}
-
-/* ==========================================================================
    BOUTONS
    ========================================================================== */
 
@@ -389,7 +320,7 @@ a {
   font-size: 14.5px;
   font-weight: 600;
   padding: 13px 16px;
-  border: 1px solid transparent;
+  border: 1.5px solid transparent;
   transition: transform var(--transition), box-shadow var(--transition), background var(--transition), border-color var(--transition), filter var(--transition);
 }
 
@@ -400,7 +331,6 @@ a {
 .btn--primary {
   background: var(--accent-gradient);
   color: #fff;
-  margin-top: 6px;
   box-shadow: 0 12px 24px -10px rgba(91, 95, 239, 0.55);
 }
 
@@ -412,7 +342,7 @@ a {
 .btn--discord {
   background: var(--surface-alt);
   color: var(--text);
-  border: 1px solid var(--border-strong);
+  border: 1.5px solid var(--border-strong);
 }
 
 .btn--discord:hover {
@@ -433,7 +363,7 @@ a {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 20px 0;
+  margin: 18px 0;
   color: var(--text-faint);
   font-size: 12.5px;
 }
@@ -490,6 +420,7 @@ a {
   border-radius: var(--radius-sm);
   border: 1.5px solid var(--border-strong);
   background: var(--input-bg);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
   transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
 }
 
@@ -497,6 +428,14 @@ a {
   border-color: var(--accent);
   box-shadow: 0 0 0 4px var(--accent-soft);
   background: var(--surface-solid);
+}
+
+.field__prefix {
+  padding-left: 14px;
+  color: var(--text-faint);
+  font-weight: 600;
+  font-size: 14.5px;
+  user-select: none;
 }
 
 .field__control input {
@@ -694,7 +633,7 @@ a {
 
 .card__footer {
   text-align: center;
-  margin-top: 18px;
+  margin-top: 4px;
   font-size: 13.5px;
   color: var(--text-muted);
 }
@@ -716,6 +655,12 @@ a {
   .theme-toggle {
     top: 16px;
     right: 16px;
+  }
+
+  .halo {
+    width: 640px;
+    height: 640px;
+    filter: blur(90px);
   }
 }
 
