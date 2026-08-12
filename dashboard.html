@@ -22,6 +22,33 @@
             </div>
         </div>
     </div>
+
+    <!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Intranet - Dashboard</title>
+    <!-- Tes liens CSS ici -->
+</head>
+<body>
+
+    <!-- 1. Bloc de liaison (affiché par défaut ou si non lié) -->
+    <div id="discord-link-container" style="display: none;">
+        <h2>Lier votre compte Discord</h2>
+        <p>Cliquez sur le bouton ci-dessous pour lier votre compte Discord et activer la connexion rapide.</p>
+        <button id="btn-link">Lier mon compte Discord</button>
+    </div>
+
+    <!-- 2. Contenu principal du dashboard (caché par défaut) -->
+    <div id="main-dashboard-content" style="display: none;">
+        <h1>Bienvenue sur ton Dashboard !</h1>
+        <!-- Tout le reste de ton intranet / tes widgets / tes menus ici -->
+    </div>
+
+    <!-- Ton script JavaScript du dashboard -->
+    <script type="module" src="./JS/dashboard.js"></script>
+</body>
+</html>
     <script type="module" src="dashboard.js"></script>
 </body>
 </html>
