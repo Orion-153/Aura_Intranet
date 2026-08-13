@@ -15,7 +15,7 @@
 </head>
 <body>
 
-  <!-- Fond : halo conique animé + grille de points -->
+  <!-- Fond -->
   <div class="halo" aria-hidden="true"></div>
   <div class="grid-overlay" aria-hidden="true"></div>
 
@@ -30,9 +30,10 @@
             <path d="M10.5 20.5V11.5L16 15.2 10.5 20.5Z" fill="white" opacity="0.95"/>
             <path d="M16 15.2 21.5 11.5V20.5L16 15.2Z" fill="white" opacity="0.55"/>
             <defs>
+              <!-- Les couleurs du logo s'adaptent dynamiquement -->
               <linearGradient id="brandGrad" x1="1" y1="1" x2="31" y2="31" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#5B5FEF"/>
-                <stop offset="1" stop-color="#8B7CF6"/>
+                <stop stop-color="var(--accent, #5B5FEF)"/>
+                <stop offset="1" stop-color="var(--accent-gradient, #8B7CF6)"/>
               </linearGradient>
             </defs>
           </svg>
@@ -73,7 +74,7 @@
             </span>
           </button>
           
-          <!-- NOUVEAU : Menu Utilisateur Cliquable -->
+          <!-- Menu Utilisateur Cliquable -->
           <div class="user-menu-container">
             <button class="user-profile-btn" id="user-menu-btn" aria-expanded="false">
               <span class="user-avatar" id="user-initial">?</span>
@@ -87,8 +88,21 @@
                 <p class="dropdown-role">Membre Intranet</p>
               </div>
               <div class="dropdown-divider"></div>
+              
               <a href="#" class="dropdown-item">Mon Profil</a>
-              <a href="#" class="dropdown-item">Paramètres</a>
+              
+              <!-- NOUVEAU : Sélecteur de couleur d'accent -->
+              <div class="dropdown-item theme-color-selector">
+                <span class="theme-color-label">Couleur du tableau</span>
+                <div class="theme-colors">
+                  <button class="color-btn is-active" data-color="purple" style="background: #5B5FEF;"></button>
+                  <button class="color-btn" data-color="blue" style="background: #3b82f6;"></button>
+                  <button class="color-btn" data-color="emerald" style="background: #10b981;"></button>
+                  <button class="color-btn" data-color="rose" style="background: #f43f5e;"></button>
+                  <button class="color-btn" data-color="amber" style="background: #f59e0b;"></button>
+                </div>
+              </div>
+
               <div class="dropdown-divider"></div>
               <button id="btn-logout" class="dropdown-item text-danger">Déconnexion</button>
             </div>
