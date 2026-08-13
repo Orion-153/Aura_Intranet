@@ -238,11 +238,16 @@ function initLoginForm() {
         passwordInput.value
       );
 
-      setFormMessage(message, "Connexion reussie - redirection a venir vers le dashboard.", "success");
+      setFormMessage(message, "Connexion reussie - redirection...", "success");
+
+      // ---> AJOUTÉ : Redirection vers le dashboard après 1 seconde
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 1000);
+
     } catch (error) {
       setFormMessage(message, translateFirebaseError(error), "error");
-    } finally {
-      submitBtn.disabled = false;
+      submitBtn.disabled = false; // Réactive le bouton uniquement en cas d'erreur
     }
   });
 }
@@ -253,7 +258,6 @@ function initLoginForm() {
 
 function initRegisterForm() {
   const form = document.getElementById("panel-register");
-  if (!form) return;
   const usernameInput = document.getElementById("register-username");
   const passwordInput = document.getElementById("register-password");
   const confirmInput = document.getElementById("register-confirm");
@@ -295,7 +299,7 @@ function initRegisterForm() {
 
     if (!ensureFirebaseReady(message)) return;
 
-    if (submitBtn) submitBtn.disabled = true;
+    submitBtn.disabled = true;
 
     try {
       const pseudo = usernameInput.value.trim();
@@ -314,19 +318,20 @@ function initRegisterForm() {
         discordLinked: false,
       });
 
-      setFormMessage(message, "Compte cree avec succes - vous etes connecte(e).", "success");
+      setFormMessage(message, "Compte cree avec succes - redirection...", "success");
 
+      // ---> AJOUTÉ : Redirection vers le dashboard après 1.5 secondes
       setTimeout(() => {
         window.location.href = "dashboard.html";
       }, 1500);
 
     } catch (error) {
       setFormMessage(message, translateFirebaseError(error), "error");
-    } finally {
-      if (submitBtn) submitBtn.disabled = false;
+      submitBtn.disabled = false; // Réactive le bouton uniquement en cas d'erreur
     }
   });
 }
+
 /* ==========================================================================
    7) MOT DE PASSE OUBLIE
    ========================================================================== */
@@ -344,6 +349,7 @@ function initForgotPassword() {
     );
   });
 }
+
 /* ==========================================================================
    8) CONNEXION DISCORD - OAuth2
    ========================================================================== */
