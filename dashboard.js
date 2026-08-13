@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initSettingsModal();
   initAccentColors();
   initUserMenu();
-  initNavigation(); // NOUVEAU : Gestion des onglets
+  initNavigation();
+  initPreferences(); // Initialisation du mode compact
   initDashboardAuth();
 });
 
@@ -148,7 +149,7 @@ function initUserMenu() {
 }
 
 /* ==========================================================================
-   5) NOUVEAU : NAVIGATION ENTRE LES VUES (ONGLETS)
+   5) NAVIGATION ENTRE LES VUES
    ========================================================================== */
 function initNavigation() {
   const sidebarLinks = document.querySelectorAll(".sidebar__link");
@@ -157,23 +158,18 @@ function initNavigation() {
   const dropdown = document.getElementById("user-dropdown");
   const welcomeTitle = document.getElementById("welcome-title");
 
-  // Titres pour l'en-tête selon la vue
   const viewTitles = {
     "view-dashboard": "Tableau de bord",
-    "view-documents": "Espace Documents",
-    "view-directory": "Annuaire Interne",
+    "view-documents": "Ressources partagées",
+    "view-directory": "Annuaire des membres",
     "view-profile": "Mon Profil"
   };
 
   function switchView(targetId) {
-    // 1. Cacher toutes les vues
     viewSections.forEach(section => section.classList.remove("is-active"));
-    
-    // 2. Afficher la vue ciblée
     const targetSection = document.getElementById(targetId);
     if (targetSection) targetSection.classList.add("is-active");
 
-    // 3. Mettre à jour l'état actif dans la sidebar
     sidebarLinks.forEach(link => {
       if (link.dataset.target === targetId) {
         link.classList.add("is-active");
@@ -182,13 +178,11 @@ function initNavigation() {
       }
     });
 
-    // 4. Mettre à jour le titre en haut de la page
     if (viewTitles[targetId]) {
       welcomeTitle.textContent = viewTitles[targetId];
     }
   }
 
-  // Écouteurs sur la barre latérale
   sidebarLinks.forEach(link => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
@@ -197,18 +191,43 @@ function initNavigation() {
     });
   });
 
-  // Écouteur sur le bouton "Mon Profil" du menu déroulant
   if (btnOpenProfile) {
     btnOpenProfile.addEventListener("click", (e) => {
       e.preventDefault();
       switchView("view-profile");
-      dropdown.classList.remove("is-open"); // Fermer le menu après le clic
+      dropdown.classList.remove("is-open");
     });
   }
 }
 
 /* ==========================================================================
-   6) GESTION DE L'AUTHENTIFICATION FIREBASE
+   6) MODE COMPACT (Préférences)
+   ========================================================================== */
+function initPreferences() {
+  const compactToggle = document.getElementById("compact-mode-toggle");
+  if (!compactToggle) return;
+
+  // Charger le paramètre depuis le LocalStorage
+  const isCompact = localStorage.getItem("intranet-compact") === "true";
+  compactToggle.checked = isCompact;
+  if (isCompact) {
+    document.body.classList.add("compact-mode");
+  }
+
+  // Écouter le changement
+  compactToggle.addEventListener("change", (e) => {
+    if (e.target.checked) {
+      document.body.classList.add("compact-mode");
+      localStorage.setItem("intranet-compact", "true");
+    } else {
+      document.body.classList.remove("compact-mode");
+      localStorage.setItem("intranet-compact", "false");
+    }
+  });
+}
+
+/* ==========================================================================
+   7) GESTION DE L'AUTHENTIFICATION FIREBASE
    ========================================================================== */
 function initDashboardAuth() {
   const welcomeTitle = document.getElementById("welcome-title");
@@ -217,7 +236,6 @@ function initDashboardAuth() {
   const dropdownName = document.getElementById("dropdown-name");
   const btnLogout = document.getElementById("btn-logout");
 
-  // Éléments de la page Profil
   const profileName = document.getElementById("profile-name");
   const profileInitial = document.getElementById("profile-initial");
   const profileEmail = document.getElementById("profile-email");
@@ -230,13 +248,11 @@ function initDashboardAuth() {
       const pseudo = user.displayName || "Utilisateur";
       const initial = pseudo.charAt(0).toUpperCase();
 
-      // Topbar & Menu
-      welcomeTitle.textContent = "Tableau de bord"; // Texte par défaut au chargement
+      welcomeTitle.textContent = "Tableau de bord"; 
       userInitial.textContent = initial;
       userNameDisplay.textContent = pseudo;
       dropdownName.textContent = pseudo;
 
-      // Page Profil
       if (profileName) profileName.textContent = pseudo;
       if (profileInitial) profileInitial.textContent = initial;
       if (profileEmail) profileEmail.textContent = user.email || "Non renseigné";
