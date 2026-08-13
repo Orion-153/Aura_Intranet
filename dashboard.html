@@ -30,7 +30,6 @@
             <path d="M10.5 20.5V11.5L16 15.2 10.5 20.5Z" fill="white" opacity="0.95"/>
             <path d="M16 15.2 21.5 11.5V20.5L16 15.2Z" fill="white" opacity="0.55"/>
             <defs>
-              <!-- Les couleurs du logo s'adaptent dynamiquement -->
               <linearGradient id="brandGrad" x1="1" y1="1" x2="31" y2="31" gradientUnits="userSpaceOnUse">
                 <stop stop-color="var(--accent, #5B5FEF)"/>
                 <stop offset="1" stop-color="var(--accent-gradient, #8B7CF6)"/>
@@ -90,18 +89,7 @@
               <div class="dropdown-divider"></div>
               
               <a href="#" class="dropdown-item">Mon Profil</a>
-              
-              <!-- NOUVEAU : Sélecteur de couleur d'accent -->
-              <div class="dropdown-item theme-color-selector">
-                <span class="theme-color-label">Couleur du tableau</span>
-                <div class="theme-colors">
-                  <button class="color-btn is-active" data-color="purple" style="background: #5B5FEF;"></button>
-                  <button class="color-btn" data-color="blue" style="background: #3b82f6;"></button>
-                  <button class="color-btn" data-color="emerald" style="background: #10b981;"></button>
-                  <button class="color-btn" data-color="rose" style="background: #f43f5e;"></button>
-                  <button class="color-btn" data-color="amber" style="background: #f59e0b;"></button>
-                </div>
-              </div>
+              <button id="btn-open-settings" class="dropdown-item">Paramètres</button>
 
               <div class="dropdown-divider"></div>
               <button id="btn-logout" class="dropdown-item text-danger">Déconnexion</button>
@@ -128,6 +116,47 @@
       </section>
 
     </main>
+  </div>
+
+  <!-- FENÊTRE MODALE DES PARAMÈTRES -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-card card">
+      <div class="modal-header">
+        <h2 class="card__title">Paramètres</h2>
+        <button class="modal-close" id="btn-close-settings">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Section Personnalisation -->
+        <div class="settings-section">
+          <h3 class="settings-section-title">Personnalisation</h3>
+          <p class="card__subtitle">Choisissez la couleur principale de votre interface (fond, boutons, éléments).</p>
+          
+          <div class="theme-colors-grid">
+            <button class="color-option is-active" data-color="purple" style="--btn-color: #5B5FEF;">
+              <span class="color-preview" style="background: #5B5FEF;"></span>
+              <span>Violet Classique</span>
+            </button>
+            <button class="color-option" data-color="blue" style="--btn-color: #3b82f6;">
+              <span class="color-preview" style="background: #3b82f6;"></span>
+              <span>Bleu Océan</span>
+            </button>
+            <button class="color-option" data-color="emerald" style="--btn-color: #10b981;">
+              <span class="color-preview" style="background: #10b981;"></span>
+              <span>Vert Émeraude</span>
+            </button>
+            <button class="color-option" data-color="rose" style="--btn-color: #f43f5e;">
+              <span class="color-preview" style="background: #f43f5e;"></span>
+              <span>Rose Sunset</span>
+            </button>
+            <button class="color-option" data-color="amber" style="--btn-color: #f59e0b;">
+              <span class="color-preview" style="background: #f59e0b;"></span>
+              <span>Ambre Solaire</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="dashboard.js"></script>
