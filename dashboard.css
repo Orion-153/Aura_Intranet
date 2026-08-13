@@ -41,12 +41,12 @@ body {
 }
 
 /* ==========================================================================
-   FOND (Corrigé : lumière diffuse depuis le haut)
+   FOND (Dégradé plat de haut en bas, sans aucun rond)
    ========================================================================== */
 .halo {
   position: fixed; 
   inset: 0; 
-  background: radial-gradient(ellipse at 50% -20%, var(--halo-color) 0%, transparent 80%);
+  background: linear-gradient(to bottom, var(--halo-color) 0%, transparent 100%);
   z-index: -2; 
   pointer-events: none;
 }
