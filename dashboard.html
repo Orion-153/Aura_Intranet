@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Intranet — Tableau de bord</title>
 
-  <!-- Polices identiques au login -->
+  <!-- Polices -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -15,7 +15,7 @@
 </head>
 <body>
 
-  <!-- Fond : halo conique animé + grille de points (comme sur le login) -->
+  <!-- Fond : halo conique animé + grille de points -->
   <div class="halo" aria-hidden="true"></div>
   <div class="grid-overlay" aria-hidden="true"></div>
 
@@ -50,12 +50,6 @@
           Serveur
         </a>
       </nav>
-
-      <div class="sidebar__footer">
-        <button id="btn-logout" class="btn btn--secondary">
-          <span>Déconnexion</span>
-        </button>
-      </div>
     </aside>
 
     <!-- Zone principale -->
@@ -69,22 +63,37 @@
         </div>
         
         <div class="topbar__actions">
-          <!-- Bouton de thème repris du login -->
+          <!-- Bouton de thème -->
           <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Changer de thème">
             <span class="theme-toggle__track">
               <span class="theme-toggle__thumb">
-                <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/>
-                  <path d="M12 2.5V5M12 19v2.5M4.6 4.6L6.4 6.4M17.6 17.6l1.8 1.8M2.5 12H5M19 12h2.5M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                </svg>
-                <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-                </svg>
+                <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5V5M12 19v2.5M4.6 4.6L6.4 6.4M17.6 17.6l1.8 1.8M2.5 12H5M19 12h2.5M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
               </span>
             </span>
           </button>
           
-          <div class="user-avatar" id="user-initial">?</div>
+          <!-- NOUVEAU : Menu Utilisateur Cliquable -->
+          <div class="user-menu-container">
+            <button class="user-profile-btn" id="user-menu-btn" aria-expanded="false">
+              <span class="user-avatar" id="user-initial">?</span>
+              <span class="user-name" id="user-name-display">Chargement...</span>
+              <svg class="icon-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            
+            <div class="user-dropdown" id="user-dropdown">
+              <div class="dropdown-header">
+                <p class="dropdown-name" id="dropdown-name">Utilisateur</p>
+                <p class="dropdown-role">Membre Intranet</p>
+              </div>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item">Mon Profil</a>
+              <a href="#" class="dropdown-item">Paramètres</a>
+              <div class="dropdown-divider"></div>
+              <button id="btn-logout" class="dropdown-item text-danger">Déconnexion</button>
+            </div>
+          </div>
+
         </div>
       </header>
 
