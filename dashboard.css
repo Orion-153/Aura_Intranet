@@ -1,120 +1,71 @@
 :root {
-  --bg-main: #0f172a;
-  --bg-card: rgba(30, 41, 59, 0.7);
-  --border-color: rgba(255, 255, 255, 0.08);
+  --bg-color: #0f172a;
+  --card-bg: rgba(30, 41, 59, 0.75);
+  --border-color: rgba(255, 255, 255, 0.1);
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --accent: #5865F2;
-  --danger: #ed4245;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  --accent-hover: #4752c4;
+  --danger-color: #ed4245;
 }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: var(--bg-main);
+  background-color: var(--bg-color);
   background-image: 
-    radial-gradient(at 0% 0%, rgba(88, 101, 242, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(147, 51, 234, 0.1) 0px, transparent 50%);
+    radial-gradient(at 10% 20%, rgba(88, 101, 242, 0.15) 0px, transparent 50%),
+    radial-gradient(at 90% 80%, rgba(147, 51, 234, 0.12) 0px, transparent 50%);
+  background-attachment: fixed;
   color: var(--text-main);
+  margin: 0;
   min-height: 100vh;
   display: flex;
-}
-
-/* Sidebar */
-.sidebar {
-  width: 260px;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(12px);
-  border-right: 1px solid var(--border-color);
-  display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 2rem 1.5rem;
 }
 
-.sidebar__brand {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #fff;
-  margin-bottom: 2.5rem;
+/* Barre de navigation supérieure style Login */
+.navbar {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  padding: 1.2rem 3rem;
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-color);
 }
 
-.sidebar__brand span {
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #fff;
+}
+
+.logo span {
   color: var(--accent);
 }
 
-.sidebar__nav {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.sidebar__link {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  color: var(--text-muted);
-  text-decoration: none;
-  border-radius: 10px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.sidebar__link:hover, .sidebar__link.is-active {
-  background: var(--accent);
-  color: #fff;
-}
-
-/* Main Area */
-.main-wrapper {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  height: 100vh;
-}
-
-/* Topbar */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 2.5rem;
-  border-bottom: 1px solid var(--border-color);
-  background: rgba(15, 23, 42, 0.4);
-  backdrop-filter: blur(10px);
-}
-
-.topbar__title h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
+/* Profil utilisateur à droite */
 .user-profile {
   display: flex;
   align-items: center;
   gap: 15px;
+  background: rgba(15, 23, 42, 0.4);
+  padding: 6px 15px;
+  border-radius: 30px;
+  border: 1px solid var(--border-color);
 }
 
 .user-avatar {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   background: var(--accent);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
+  font-size: 0.9rem;
   color: white;
 }
 
@@ -125,71 +76,63 @@ body {
 
 .user-name {
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  color: var(--text-main);
 }
 
 .user-role {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
 }
 
+/* Bouton de déconnexion identique aux boutons de formulaire */
 .logout-btn {
-  background: rgba(237, 66, 69, 0.1);
-  color: var(--danger);
-  border: 1px solid rgba(237, 66, 69, 0.2);
-  padding: 8px 16px;
+  background: var(--danger-color);
+  color: white;
+  border: none;
+  padding: 6px 14px;
   border-radius: 8px;
   font-weight: 600;
+  font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: opacity 0.2s, transform 0.2s;
 }
 
 .logout-btn:hover {
-  background: var(--danger);
-  color: white;
+  opacity: 0.9;
+  transform: scale(1.02);
 }
 
-/* Content */
+/* Contenu centralisé façon "Carte de Login" */
 .content-body {
-  padding: 2.5rem;
+  flex-grow: 1;
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
 }
 
-.welcome-banner {
-  background: linear-gradient(135deg, rgba(88, 101, 242, 0.2), rgba(147, 51, 234, 0.1));
-  border: 1px solid rgba(88, 101, 242, 0.3);
-  padding: 2.5rem;
-  border-radius: 20px;
-}
-
-.welcome-banner h1 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-.welcome-banner p {
-  color: var(--text-muted);
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-}
-
-.stat-card {
-  background: var(--bg-card);
+.welcome-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
-  padding: 1.5rem;
-  border-radius: 16px;
-  backdrop-filter: blur(10px);
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
 }
 
-.stat-card h3 {
+.welcome-card h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.welcome-card p {
   color: var(--text-muted);
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+  line-height: 1.5;
 }
