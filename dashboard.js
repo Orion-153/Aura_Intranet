@@ -1,182 +1,163 @@
-/* ==========================================================================
-   INTRANET — DASHBOARD
-   ========================================================================== */
-
 import { auth } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   initThemeToggle();
-  initSettingsModal();
+  initModals();
   initAccentColors();
   initUserMenu();
   initDashboardAuth();
 });
 
 /* ==========================================================================
-   1) GESTION DU THÈME (CLAIR / SOMBRE)
+   1) GESTION DU THÈME
    ========================================================================== */
 function initThemeToggle() {
-  const STORAGE_KEY = "intranet-theme";
   const toggleBtn = document.getElementById("theme-toggle");
   const root = document.documentElement;
+  
+  const savedTheme = localStorage.getItem("intranet-theme") || "dark";
+  if (savedTheme === "dark") root.setAttribute("data-theme", "dark");
+  else root.removeAttribute("data-theme");
 
-  const applyTheme = (theme) => {
-    if (theme === "dark") {
-      root.setAttribute("data-theme", "dark");
-    } else {
+  toggleBtn?.addEventListener("click", () => {
+    const isDark = root.getAttribute("data-theme") === "dark";
+    if (isDark) {
       root.removeAttribute("data-theme");
+      localStorage.setItem("intranet-theme", "light");
+    } else {
+      root.setAttribute("data-theme", "dark");
+      localStorage.setItem("intranet-theme", "dark");
     }
-  };
-
-  const savedTheme = localStorage.getItem(STORAGE_KEY);
-  if (savedTheme) {
-    applyTheme(savedTheme);
-  } else {
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    applyTheme(prefersDark ? "dark" : "light");
-  }
-
-  if (toggleBtn) {
-    toggleBtn.addEventListener("click", () => {
-      const isDark = root.getAttribute("data-theme") === "dark";
-      const nextTheme = isDark ? "light" : "dark";
-      applyTheme(nextTheme);
-      localStorage.setItem(STORAGE_KEY, nextTheme);
-    });
-  }
+  });
 }
 
 /* ==========================================================================
-   2) FENÊTRE MODALE DES PARAMÈTRES
+   2) GESTION DES MODALES (PROFIL ET PARAMÈTRES)
    ========================================================================== */
-function initSettingsModal() {
-  const openBtn = document.getElementById("btn-open-settings");
-  const closeBtn = document.getElementById("btn-close-settings");
-  const modal = document.getElementById("settings-modal");
+function initModals() {
   const dropdown = document.getElementById("user-dropdown");
-
-  if (!openBtn || !modal) return;
-
-  openBtn.addEventListener("click", (e) => {
-    e.preventDefault();
+  
+  // Modale Paramètres
+  const settingsModal = document.getElementById("settings-modal");
+  document.getElementById("btn-open-settings")?.addEventListener("click", () => {
     dropdown?.classList.remove("is-open");
-    modal.classList.add("is-open");
+    settingsModal.classList.add("is-open");
+  });
+  document.getElementById("btn-close-settings")?.addEventListener("click", () => {
+    settingsModal.classList.remove("is-open");
   });
 
-  closeBtn?.addEventListener("click", () => {
-    modal.classList.remove("is-open");
+  // Modale Profil
+  const profileModal = document.getElementById("profile-modal");
+  document.getElementById("btn-open-profile")?.addEventListener("click", () => {
+    dropdown?.classList.remove("is-open");
+    profileModal.classList.add("is-open");
+  });
+  document.getElementById("btn-close-profile")?.addEventListener("click", () => {
+    profileModal.classList.remove("is-open");
+  });
+  document.getElementById("btn-save-profile")?.addEventListener("click", () => {
+    // Simuler une sauvegarde
+    const btn = document.getElementById("btn-save-profile");
+    const originalText = btn.textContent;
+    btn.textContent = "Sauvegardé !";
+    setTimeout(() => {
+      btn.textContent = originalText;
+      profileModal.classList.remove("is-open");
+    }, 1500);
   });
 
-  // Fermer si on clique en dehors de la carte de paramètres
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.classList.remove("is-open");
-    }
+  // Fermer au clic en dehors
+  window.addEventListener("click", (e) => {
+    if (e.target === settingsModal) settingsModal.classList.remove("is-open");
+    if (e.target === profileModal) profileModal.classList.remove("is-open");
   });
 }
 
 /* ==========================================================================
-   3) GESTION DE LA COULEUR D'ACCENTUATION (DANS PARAMÈTRES)
+   3) COULEURS D'ACCENTUATION
    ========================================================================== */
 function initAccentColors() {
-  const STORAGE_KEY = "intranet-accent-color";
   const root = document.documentElement;
   const colorOptions = document.querySelectorAll(".color-option");
 
   const colors = {
-    purple:  { accent: "#5B5FEF", gradient: "#8B7CF6", haloLight: "rgba(91, 95, 239, 0.12)", haloDark: "rgba(91, 95, 239, 0.15)" },
-    blue:    { accent: "#3b82f6", gradient: "#60a5fa", haloLight: "rgba(59, 130, 246, 0.12)", haloDark: "rgba(59, 130, 246, 0.15)" },
-    emerald: { accent: "#10b981", gradient: "#34d399", haloLight: "rgba(16, 185, 129, 0.12)", haloDark: "rgba(16, 185, 129, 0.15)" },
-    rose:    { accent: "#f43f5e", gradient: "#fb7185", haloLight: "rgba(244, 63, 94, 0.12)",  haloDark: "rgba(244, 63, 94, 0.15)" },
-    amber:   { accent: "#f59e0b", gradient: "#fbbf24", haloLight: "rgba(245, 158, 11, 0.12)",  haloDark: "rgba(245, 158, 11, 0.15)" }
+    indigo: { accent: "#4f46e5", light: "rgba(79, 70, 229, 0.1)" },
+    emerald: { accent: "#10b981", light: "rgba(16, 185, 129, 0.1)" },
+    rose: { accent: "#e11d48", light: "rgba(225, 29, 72, 0.1)" }
   };
 
-  const applyAccentColor = (colorName) => {
+  const applyColor = (colorName) => {
     const theme = colors[colorName];
     if (!theme) return;
-
     root.style.setProperty("--accent", theme.accent);
-    root.style.setProperty("--accent-gradient", theme.gradient);
+    root.style.setProperty("--accent-light", theme.light);
     
-    const isDark = root.getAttribute("data-theme") === "dark";
-    root.style.setProperty("--halo-color", isDark ? theme.haloDark : theme.haloLight);
-
     colorOptions.forEach(opt => {
       opt.classList.toggle("is-active", opt.dataset.color === colorName);
     });
   };
 
-  const savedColor = localStorage.getItem(STORAGE_KEY) || "purple";
-  applyAccentColor(savedColor);
+  const savedColor = localStorage.getItem("intranet-color") || "indigo";
+  applyColor(savedColor);
 
   colorOptions.forEach(opt => {
     opt.addEventListener("click", () => {
-      const colorName = opt.dataset.color;
-      applyAccentColor(colorName);
-      localStorage.setItem(STORAGE_KEY, colorName);
+      applyColor(opt.dataset.color);
+      localStorage.setItem("intranet-color", opt.dataset.color);
     });
-  });
-  
-  document.getElementById("theme-toggle")?.addEventListener("click", () => {
-    const currentColor = localStorage.getItem(STORAGE_KEY) || "purple";
-    applyAccentColor(currentColor);
   });
 }
 
 /* ==========================================================================
-   4) MENU UTILISATEUR DÉROULANT
+   4) MENU UTILISATEUR
    ========================================================================== */
 function initUserMenu() {
   const menuBtn = document.getElementById("user-menu-btn");
   const dropdown = document.getElementById("user-dropdown");
 
-  if (!menuBtn || !dropdown) return;
-
-  menuBtn.addEventListener("click", (e) => {
+  menuBtn?.addEventListener("click", (e) => {
     e.stopPropagation();
     dropdown.classList.toggle("is-open");
-    menuBtn.setAttribute("aria-expanded", dropdown.classList.contains("is-open"));
   });
 
   document.addEventListener("click", (e) => {
-    if (dropdown.classList.contains("is-open") && !dropdown.contains(e.target)) {
+    if (dropdown && dropdown.classList.contains("is-open") && !dropdown.contains(e.target)) {
       dropdown.classList.remove("is-open");
-      menuBtn.setAttribute("aria-expanded", "false");
     }
   });
 }
 
 /* ==========================================================================
-   5) GESTION DE L'AUTHENTIFICATION FIREBASE
+   5) FIREBASE AUTHENTIFICATION
    ========================================================================== */
 function initDashboardAuth() {
-  const welcomeTitle = document.getElementById("welcome-title");
-  const userInitial = document.getElementById("user-initial");
-  const userNameDisplay = document.getElementById("user-name-display");
-  const dropdownName = document.getElementById("dropdown-name");
-  const btnLogout = document.getElementById("btn-logout");
-
   onAuthStateChanged(auth, (user) => {
     if (!user) {
-      window.location.href = "index.html";
+      window.location.href = "index.html"; // Rediriger si non connecté
     } else {
-      const pseudo = user.displayName || "Utilisateur";
-      welcomeTitle.textContent = `Bonjour, ${pseudo} !`;
-      userInitial.textContent = pseudo.charAt(0).toUpperCase();
-      userNameDisplay.textContent = pseudo;
-      dropdownName.textContent = pseudo;
+      const pseudo = user.displayName || "Membre";
+      const email = user.email || "Non renseigné";
+      const initial = pseudo.charAt(0).toUpperCase();
+
+      // Mettre à jour l'interface principale
+      document.getElementById("welcome-name").textContent = pseudo;
+      document.getElementById("user-initial").textContent = initial;
+      document.getElementById("dropdown-name").textContent = pseudo;
+
+      // Mettre à jour la modale Profil
+      document.getElementById("profile-avatar").textContent = initial;
+      document.getElementById("profile-name").textContent = pseudo;
+      document.getElementById("profile-email").textContent = email;
     }
   });
 
-  if (btnLogout) {
-    btnLogout.addEventListener("click", async () => {
-      try {
-        await signOut(auth);
-        window.location.href = "index.html";
-      } catch (error) {
-        console.error("Erreur lors de la déconnexion:", error);
-      }
-    });
-  }
+  document.getElementById("btn-logout")?.addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Erreur de déconnexion:", error);
+    }
+  });
 }
