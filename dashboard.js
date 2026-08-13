@@ -7,7 +7,8 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
 
 document.addEventListener("DOMContentLoaded", () => {
   initThemeToggle();
-  initAccentColors(); // Nouvelle fonction pour les couleurs !
+  initSettingsModal();
+  initAccentColors();
   initUserMenu();
   initDashboardAuth();
 });
@@ -47,14 +48,42 @@ function initThemeToggle() {
 }
 
 /* ==========================================================================
-   2) GESTION DE LA COULEUR D'ACCENTUATION (NOUVEAU)
+   2) FENÊTRE MODALE DES PARAMÈTRES
+   ========================================================================== */
+function initSettingsModal() {
+  const openBtn = document.getElementById("btn-open-settings");
+  const closeBtn = document.getElementById("btn-close-settings");
+  const modal = document.getElementById("settings-modal");
+  const dropdown = document.getElementById("user-dropdown");
+
+  if (!openBtn || !modal) return;
+
+  openBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    dropdown?.classList.remove("is-open");
+    modal.classList.add("is-open");
+  });
+
+  closeBtn?.addEventListener("click", () => {
+    modal.classList.remove("is-open");
+  });
+
+  // Fermer si on clique en dehors de la carte de paramètres
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.classList.remove("is-open");
+    }
+  });
+}
+
+/* ==========================================================================
+   3) GESTION DE LA COULEUR D'ACCENTUATION (DANS PARAMÈTRES)
    ========================================================================== */
 function initAccentColors() {
   const STORAGE_KEY = "intranet-accent-color";
   const root = document.documentElement;
-  const colorBtns = document.querySelectorAll(".color-btn");
+  const colorOptions = document.querySelectorAll(".color-option");
 
-  // Dictionnaire des thèmes colorés (Couleur de base, Dégradé, Couleur du halo)
   const colors = {
     purple:  { accent: "#5B5FEF", gradient: "#8B7CF6", haloLight: "rgba(91, 95, 239, 0.12)", haloDark: "rgba(91, 95, 239, 0.15)" },
     blue:    { accent: "#3b82f6", gradient: "#60a5fa", haloLight: "rgba(59, 130, 246, 0.12)", haloDark: "rgba(59, 130, 246, 0.15)" },
@@ -67,35 +96,28 @@ function initAccentColors() {
     const theme = colors[colorName];
     if (!theme) return;
 
-    // Met à jour les variables CSS globales
     root.style.setProperty("--accent", theme.accent);
     root.style.setProperty("--accent-gradient", theme.gradient);
     
-    // Pour le halo, on choisit l'opacité selon le mode (sombre ou clair)
     const isDark = root.getAttribute("data-theme") === "dark";
     root.style.setProperty("--halo-color", isDark ? theme.haloDark : theme.haloLight);
 
-    // Met à jour les boutons actifs dans le menu
-    colorBtns.forEach(btn => {
-      btn.classList.toggle("is-active", btn.dataset.color === colorName);
+    colorOptions.forEach(opt => {
+      opt.classList.toggle("is-active", opt.dataset.color === colorName);
     });
   };
 
-  // Charge la couleur au démarrage
   const savedColor = localStorage.getItem(STORAGE_KEY) || "purple";
   applyAccentColor(savedColor);
 
-  // Ajoute l'événement au clic sur les pastilles
-  colorBtns.forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation(); // Évite de fermer le menu en cliquant sur une couleur
-      const colorName = btn.dataset.color;
+  colorOptions.forEach(opt => {
+    opt.addEventListener("click", () => {
+      const colorName = opt.dataset.color;
       applyAccentColor(colorName);
       localStorage.setItem(STORAGE_KEY, colorName);
     });
   });
   
-  // S'assure que le halo s'adapte si on change le thème Clair/Sombre APRÈS avoir choisi une couleur
   document.getElementById("theme-toggle")?.addEventListener("click", () => {
     const currentColor = localStorage.getItem(STORAGE_KEY) || "purple";
     applyAccentColor(currentColor);
@@ -103,7 +125,7 @@ function initAccentColors() {
 }
 
 /* ==========================================================================
-   3) MENU UTILISATEUR DÉROULANT
+   4) MENU UTILISATEUR DÉROULANT
    ========================================================================== */
 function initUserMenu() {
   const menuBtn = document.getElementById("user-menu-btn");
@@ -126,7 +148,7 @@ function initUserMenu() {
 }
 
 /* ==========================================================================
-   4) GESTION DE L'AUTHENTIFICATION FIREBASE
+   5) GESTION DE L'AUTHENTIFICATION FIREBASE
    ========================================================================== */
 function initDashboardAuth() {
   const welcomeTitle = document.getElementById("welcome-title");
