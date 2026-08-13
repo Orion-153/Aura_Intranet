@@ -1,82 +1,241 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intranet - Mon Dashboard</title>
-    <link rel="stylesheet" href="dashboard.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intranet — Tableau de bord</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
-    <div class="app-container">
-        <aside class="sidebar">
-            <div class="logo">Aura Intranet</div>
-            <nav>
-                <button class="nav-btn active" data-target="home-section">Accueil</button>
-                <button class="nav-btn" data-target="profile-section">Mon Profil</button>
-                <button class="nav-btn" data-target="settings-section">Paramètres</button>
-            </nav>
-        </aside>
 
-        <main class="main-content">
-            <header class="topbar">
-                <h2>Tableau de bord</h2>
-                <div class="profile-container">
-                    <button id="profile-btn" class="profile-btn">
-                        <span id="topbar-pseudo">Chargement...</span>
-                        <div class="avatar">👤</div>
-                    </button>
-                    <div id="profile-dropdown" class="dropdown hidden">
-                        <button id="go-to-profile">Voir mon profil</button>
-                        <button id="logout-btn" class="danger">Se déconnecter</button>
-                    </div>
-                </div>
-            </header>
+  <div class="halo" aria-hidden="true"></div>
+  <div class="grid-overlay" aria-hidden="true"></div>
 
-            <div class="content-area">
-                <section id="home-section" class="view-section active">
-                    <div class="card">
-                        <h3>Bienvenue sur ton Espace</h3>
-                        <div id="user-info">
-                            <p>Chargement de tes informations...</p>
-                        </div>
-                    </div>
-                </section>
+  <div class="dashboard-layout">
+    
+    <aside class="sidebar card" role="navigation">
+      <header class="brand">
+        <span class="brand__mark">
+          <svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true">
+            <rect x="1" y="1" width="30" height="30" rx="9" fill="url(#brandGrad)"/>
+            <path d="M10.5 20.5V11.5L16 15.2 10.5 20.5Z" fill="white" opacity="0.95"/>
+            <path d="M16 15.2 21.5 11.5V20.5L16 15.2Z" fill="white" opacity="0.55"/>
+            <defs>
+              <linearGradient id="brandGrad" x1="1" y1="1" x2="31" y2="31" gradientUnits="userSpaceOnUse">
+                <stop stop-color="var(--accent, #5B5FEF)"/>
+                <stop offset="1" stop-color="var(--accent-gradient, #8B7CF6)"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </span>
+        <span class="brand__name">Intranet</span>
+      </header>
 
-                <section id="profile-section" class="view-section hidden">
-                    <div class="card">
-                        <h3>Mon Profil</h3>
-                        <p>Voici les informations liées à ton compte.</p>
-                        <div id="profile-details">
-                            </div>
-                    </div>
-                </section>
+      <nav class="sidebar__nav">
+        <a href="#" class="sidebar__link is-active" data-target="view-dashboard">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          Vue d'ensemble
+        </a>
+        <a href="#" class="sidebar__link" data-target="view-documents">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Documents
+        </a>
+        <a href="#" class="sidebar__link" data-target="view-directory">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Annuaire
+        </a>
+      </nav>
+    </aside>
 
-                <section id="settings-section" class="view-section hidden">
-                    <div class="card">
-                        <h3>Paramètres du compte</h3>
-                        <p>Configure tes préférences ici.</p>
-                        <div class="setting-item">
-                            <label>Notifications par email</label>
-                            <input type="checkbox" checked>
-                        </div>
-                        <div class="setting-item">
-                            <label>Thème sombre</label>
-                            <input type="checkbox">
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </main>
-    </div>
-
-    <div id="discord-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2>Lier votre compte Discord</h2>
-            <p>Cliquez sur le bouton ci-dessous pour lier votre compte Discord et activer la connexion rapide.</p>
-            <button id="btn-link">Lier mon compte Discord</button>
+    <main class="main-content">
+      
+      <header class="topbar card">
+        <div>
+          <h1 class="card__title" id="welcome-title">Chargement...</h1>
+          <p class="card__subtitle">Bienvenue sur votre espace sécurisé.</p>
         </div>
-    </div>
+        
+        <div class="topbar__actions">
+          <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Changer de thème">
+            <span class="theme-toggle__track">
+              <span class="theme-toggle__thumb">
+                <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5V5M12 19v2.5M4.6 4.6L6.4 6.4M17.6 17.6l1.8 1.8M2.5 12H5M19 12h2.5M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+              </span>
+            </span>
+          </button>
+          
+          <div class="user-menu-container">
+            <button class="user-profile-btn" id="user-menu-btn" aria-expanded="false">
+              <span class="user-avatar" id="user-initial">?</span>
+              <span class="user-name" id="user-name-display">Chargement...</span>
+              <svg class="icon-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            
+            <div class="user-dropdown" id="user-dropdown">
+              <div class="dropdown-header">
+                <p class="dropdown-name" id="dropdown-name">Utilisateur</p>
+                <p class="dropdown-role">Membre Intranet</p>
+              </div>
+              <div class="dropdown-divider"></div>
+              
+              <button id="btn-open-profile" class="dropdown-item">Mon Profil</button>
+              <button id="btn-open-settings" class="dropdown-item">Paramètres</button>
 
-    <script type="module" src="dashboard.js"></script>
+              <div class="dropdown-divider"></div>
+              <button id="btn-logout" class="dropdown-item text-danger">Déconnexion</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="views-container">
+        
+        <section id="view-dashboard" class="view-section is-active">
+          <div class="stats-grid">
+            <div class="stat-card card">
+              <h3>Statut du compte</h3>
+              <div class="stat-value text-success">Actif & Sécurisé</div>
+            </div>
+            <div class="stat-card card">
+              <h3>Authentification</h3>
+              <div class="stat-value text-accent">Firebase Auth</div>
+            </div>
+            <div class="stat-card card">
+              <h3>Dernière connexion</h3>
+              <div class="stat-value">Aujourd'hui</div>
+            </div>
+          </div>
+
+          <div class="news-section card" style="margin-top: 1rem;">
+            <h2 class="card__title">📢 Dernières Annonces</h2>
+            <p class="card__subtitle" style="margin-bottom: 1rem;">Restez informé des nouveautés de l'entreprise.</p>
+            <div class="news-item">
+              <strong>Mise à jour de l'intranet</strong> - <span>Le nouveau design est en ligne ! Explorez les paramètres pour personnaliser vos couleurs.</span>
+            </div>
+            <div class="news-item" style="margin-top: 0.5rem;">
+              <strong>Maintenance prévue</strong> - <span>Les serveurs seront redémarrés ce vendredi à 23h00.</span>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-documents" class="view-section">
+          <div class="card">
+            <h2 class="card__title">Documents Partagés</h2>
+            <p class="card__subtitle">Retrouvez ici les ressources de l'entreprise.</p>
+            <div style="padding: 2rem; text-align: center; color: var(--text-muted);">
+              Dossier actuellement vide. Bientôt disponible !
+            </div>
+          </div>
+        </section>
+
+        <section id="view-directory" class="view-section">
+          <div class="card">
+            <h2 class="card__title">Annuaire des membres</h2>
+            <p class="card__subtitle">Trouvez et contactez vos collègues.</p>
+            <div style="padding: 2rem; text-align: center; color: var(--text-muted);">
+              Liste des collaborateurs en cours de synchronisation...
+            </div>
+          </div>
+        </section>
+
+        <section id="view-profile" class="view-section">
+          <div class="card profile-detail-card">
+            <div class="profile-header">
+              <div class="user-avatar large-avatar" id="profile-initial">?</div>
+              <div>
+                <h2 class="card__title" id="profile-name">Nom de l'utilisateur</h2>
+                <p class="card__subtitle">Membre Intranet</p>
+              </div>
+            </div>
+            <div class="profile-info-grid">
+              <div class="info-group">
+                <label>Adresse Email</label>
+                <div class="info-value" id="profile-email">chargement@email.com</div>
+              </div>
+              <div class="info-group">
+                <label>ID Utilisateur</label>
+                <div class="info-value" id="profile-uid">...</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-card card">
+      <div class="modal-header">
+        <h2 class="card__title">Paramètres</h2>
+        <button class="modal-close" id="btn-close-settings">&times;</button>
+      </div>
+      
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <div class="settings-section">
+          <h3 class="settings-section-title">Personnalisation</h3>
+          <p class="card__subtitle">Choisissez la couleur principale de votre interface.</p>
+          <div class="theme-colors-grid">
+            <button class="color-option is-active" data-color="purple" style="--btn-color: #5B5FEF;">
+              <span class="color-preview" style="background: #5B5FEF;"></span>
+              <span>Violet Classique</span>
+            </button>
+            <button class="color-option" data-color="blue" style="--btn-color: #3b82f6;">
+              <span class="color-preview" style="background: #3b82f6;"></span>
+              <span>Bleu Océan</span>
+            </button>
+            <button class="color-option" data-color="emerald" style="--btn-color: #10b981;">
+              <span class="color-preview" style="background: #10b981;"></span>
+              <span>Vert Émeraude</span>
+            </button>
+            <button class="color-option" data-color="rose" style="--btn-color: #f43f5e;">
+              <span class="color-preview" style="background: #f43f5e;"></span>
+              <span>Rose Sunset</span>
+            </button>
+            <button class="color-option" data-color="amber" style="--btn-color: #f59e0b;">
+              <span class="color-preview" style="background: #f59e0b;"></span>
+              <span>Ambre Solaire</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3 class="settings-section-title">Préférences Système</h3>
+          
+          <div class="setting-row">
+            <div>
+              <div style="font-weight: 500; font-size: 0.85rem;">Notifications par email</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Recevoir les alertes importantes</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" checked>
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="setting-row" style="margin-top: 0.5rem;">
+            <div>
+              <div style="font-weight: 500; font-size: 0.85rem;">Mode Compact</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Réduire l'espacement de l'interface</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="dashboard.js"></script>
 </body>
 </html>
