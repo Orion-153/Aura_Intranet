@@ -1,102 +1,257 @@
-import { auth, db } from "./firebase.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+/* ==========================================================================
+   INTRANET — DASHBOARD
+   ========================================================================== */
+
+import { auth } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
-// Éléments du DOM
-const userInfoDiv = document.getElementById('user-info');
-const topbarPseudo = document.getElementById('topbar-pseudo');
-const profileDetails = document.getElementById('profile-details');
-const discordModal = document.getElementById('discord-modal');
+document.addEventListener("DOMContentLoaded", () => {
+  initThemeToggle();
+  initSettingsModal();
+  initAccentColors();
+  initUserMenu();
+  initNavigation(); // NOUVEAU : Gestion des onglets
+  initDashboardAuth();
+});
 
-// Initialisation Firebase Auth
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists()) {
-            const userData = userDoc.data();
-            
-            // Mise à jour de l'affichage
-            userInfoDiv.innerHTML = `<p>Connecté en tant que : <strong>${userData.pseudo}</strong></p>`;
-            topbarPseudo.textContent = userData.pseudo;
-            
-            // Remplissage de la page Profil
-            profileDetails.innerHTML = `
-                <p><strong>Email :</strong> ${user.email}</p>
-                <p><strong>Pseudo :</strong> ${userData.pseudo}</p>
-                <p><strong>Statut Discord :</strong> ${userData.discordId ? 'Lié ✅' : 'Non lié ❌'}</p>
-            `;
-            
-            // Si le discordId n'existe pas, on affiche la modale
-            if (!userData.discordId) {
-                discordModal.classList.remove('hidden');
-            }
-        }
+/* ==========================================================================
+   1) GESTION DU THÈME (CLAIR / SOMBRE)
+   ========================================================================== */
+function initThemeToggle() {
+  const STORAGE_KEY = "intranet-theme";
+  const toggleBtn = document.getElementById("theme-toggle");
+  const root = document.documentElement;
+
+  const applyTheme = (theme) => {
+    if (theme === "dark") {
+      root.setAttribute("data-theme", "dark");
     } else {
-        window.location.href = "index.html"; // Rediriger si non connecté
+      root.removeAttribute("data-theme");
     }
-});
+  };
 
-// Bouton Discord
-document.getElementById('btn-link').addEventListener('click', () => {
-    window.location.href = "https://discord.com/oauth2/authorize?client_id=1522661512412659772&response_type=code&redirect_uri=https%3A%2F%2Forion-153.github.io%2FAura_Intranet%2Fdashboard.html&scope=identify";
-});
+  const savedTheme = localStorage.getItem(STORAGE_KEY);
+  if (savedTheme) {
+    applyTheme(savedTheme);
+  } else {
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    applyTheme(prefersDark ? "dark" : "light");
+  }
 
-// ==========================================
-// LOGIQUE DE L'INTERFACE (UI)
-// ==========================================
-
-// Gestion du menu déroulant (Profil)
-const profileBtn = document.getElementById('profile-btn');
-const profileDropdown = document.getElementById('profile-dropdown');
-
-profileBtn.addEventListener('click', () => {
-    profileDropdown.classList.toggle('hidden');
-});
-
-// Fermer le menu si on clique ailleurs
-document.addEventListener('click', (e) => {
-    if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
-        profileDropdown.classList.add('hidden');
-    }
-});
-
-// Bouton "Voir mon profil" dans le menu déroulant
-document.getElementById('go-to-profile').addEventListener('click', () => {
-    switchSection('profile-section');
-    profileDropdown.classList.add('hidden');
-});
-
-// Déconnexion
-document.getElementById('logout-btn').addEventListener('click', () => {
-    signOut(auth).then(() => {
-        window.location.href = "index.html";
+  if (toggleBtn) {
+    toggleBtn.addEventListener("click", () => {
+      const isDark = root.getAttribute("data-theme") === "dark";
+      const nextTheme = isDark ? "light" : "dark";
+      applyTheme(nextTheme);
+      localStorage.setItem(STORAGE_KEY, nextTheme);
     });
-});
-
-// Gestion des onglets de navigation (Sidebar)
-const navButtons = document.querySelectorAll('.nav-btn');
-const viewSections = document.querySelectorAll('.view-section');
-
-function switchSection(targetId) {
-    // 1. Cacher toutes les sections
-    viewSections.forEach(section => section.classList.add('hidden'));
-    // 2. Afficher la bonne section
-    document.getElementById(targetId).classList.remove('hidden');
-    
-    // 3. Mettre à jour l'état actif des boutons
-    navButtons.forEach(btn => {
-        if (btn.dataset.target === targetId) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
-    });
+  }
 }
 
-// Ajouter les écouteurs sur les boutons de la sidebar
-navButtons.forEach(button => {
-    button.addEventListener('click', (e) => {
-        const targetId = e.target.dataset.target;
-        switchSection(targetId);
+/* ==========================================================================
+   2) FENÊTRE MODALE DES PARAMÈTRES
+   ========================================================================== */
+function initSettingsModal() {
+  const openBtn = document.getElementById("btn-open-settings");
+  const closeBtn = document.getElementById("btn-close-settings");
+  const modal = document.getElementById("settings-modal");
+  const dropdown = document.getElementById("user-dropdown");
+
+  if (!openBtn || !modal) return;
+
+  openBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    dropdown?.classList.remove("is-open");
+    modal.classList.add("is-open");
+  });
+
+  closeBtn?.addEventListener("click", () => {
+    modal.classList.remove("is-open");
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.classList.remove("is-open");
+    }
+  });
+}
+
+/* ==========================================================================
+   3) GESTION DE LA COULEUR D'ACCENTUATION
+   ========================================================================== */
+function initAccentColors() {
+  const STORAGE_KEY = "intranet-accent-color";
+  const root = document.documentElement;
+  const colorOptions = document.querySelectorAll(".color-option");
+
+  const colors = {
+    purple:  { accent: "#5B5FEF", gradient: "#8B7CF6", haloLight: "rgba(91, 95, 239, 0.12)", haloDark: "rgba(91, 95, 239, 0.15)" },
+    blue:    { accent: "#3b82f6", gradient: "#60a5fa", haloLight: "rgba(59, 130, 246, 0.12)", haloDark: "rgba(59, 130, 246, 0.15)" },
+    emerald: { accent: "#10b981", gradient: "#34d399", haloLight: "rgba(16, 185, 129, 0.12)", haloDark: "rgba(16, 185, 129, 0.15)" },
+    rose:    { accent: "#f43f5e", gradient: "#fb7185", haloLight: "rgba(244, 63, 94, 0.12)",  haloDark: "rgba(244, 63, 94, 0.15)" },
+    amber:   { accent: "#f59e0b", gradient: "#fbbf24", haloLight: "rgba(245, 158, 11, 0.12)",  haloDark: "rgba(245, 158, 11, 0.15)" }
+  };
+
+  const applyAccentColor = (colorName) => {
+    const theme = colors[colorName];
+    if (!theme) return;
+
+    root.style.setProperty("--accent", theme.accent);
+    root.style.setProperty("--accent-gradient", theme.gradient);
+    
+    const isDark = root.getAttribute("data-theme") === "dark";
+    root.style.setProperty("--halo-color", isDark ? theme.haloDark : theme.haloLight);
+
+    colorOptions.forEach(opt => {
+      opt.classList.toggle("is-active", opt.dataset.color === colorName);
     });
-});
+  };
+
+  const savedColor = localStorage.getItem(STORAGE_KEY) || "purple";
+  applyAccentColor(savedColor);
+
+  colorOptions.forEach(opt => {
+    opt.addEventListener("click", () => {
+      const colorName = opt.dataset.color;
+      applyAccentColor(colorName);
+      localStorage.setItem(STORAGE_KEY, colorName);
+    });
+  });
+  
+  document.getElementById("theme-toggle")?.addEventListener("click", () => {
+    const currentColor = localStorage.getItem(STORAGE_KEY) || "purple";
+    applyAccentColor(currentColor);
+  });
+}
+
+/* ==========================================================================
+   4) MENU UTILISATEUR DÉROULANT
+   ========================================================================== */
+function initUserMenu() {
+  const menuBtn = document.getElementById("user-menu-btn");
+  const dropdown = document.getElementById("user-dropdown");
+
+  if (!menuBtn || !dropdown) return;
+
+  menuBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    dropdown.classList.toggle("is-open");
+    menuBtn.setAttribute("aria-expanded", dropdown.classList.contains("is-open"));
+  });
+
+  document.addEventListener("click", (e) => {
+    if (dropdown.classList.contains("is-open") && !dropdown.contains(e.target)) {
+      dropdown.classList.remove("is-open");
+      menuBtn.setAttribute("aria-expanded", "false");
+    }
+  });
+}
+
+/* ==========================================================================
+   5) NOUVEAU : NAVIGATION ENTRE LES VUES (ONGLETS)
+   ========================================================================== */
+function initNavigation() {
+  const sidebarLinks = document.querySelectorAll(".sidebar__link");
+  const viewSections = document.querySelectorAll(".view-section");
+  const btnOpenProfile = document.getElementById("btn-open-profile");
+  const dropdown = document.getElementById("user-dropdown");
+  const welcomeTitle = document.getElementById("welcome-title");
+
+  // Titres pour l'en-tête selon la vue
+  const viewTitles = {
+    "view-dashboard": "Tableau de bord",
+    "view-documents": "Espace Documents",
+    "view-directory": "Annuaire Interne",
+    "view-profile": "Mon Profil"
+  };
+
+  function switchView(targetId) {
+    // 1. Cacher toutes les vues
+    viewSections.forEach(section => section.classList.remove("is-active"));
+    
+    // 2. Afficher la vue ciblée
+    const targetSection = document.getElementById(targetId);
+    if (targetSection) targetSection.classList.add("is-active");
+
+    // 3. Mettre à jour l'état actif dans la sidebar
+    sidebarLinks.forEach(link => {
+      if (link.dataset.target === targetId) {
+        link.classList.add("is-active");
+      } else {
+        link.classList.remove("is-active");
+      }
+    });
+
+    // 4. Mettre à jour le titre en haut de la page
+    if (viewTitles[targetId]) {
+      welcomeTitle.textContent = viewTitles[targetId];
+    }
+  }
+
+  // Écouteurs sur la barre latérale
+  sidebarLinks.forEach(link => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const targetId = link.dataset.target;
+      switchView(targetId);
+    });
+  });
+
+  // Écouteur sur le bouton "Mon Profil" du menu déroulant
+  if (btnOpenProfile) {
+    btnOpenProfile.addEventListener("click", (e) => {
+      e.preventDefault();
+      switchView("view-profile");
+      dropdown.classList.remove("is-open"); // Fermer le menu après le clic
+    });
+  }
+}
+
+/* ==========================================================================
+   6) GESTION DE L'AUTHENTIFICATION FIREBASE
+   ========================================================================== */
+function initDashboardAuth() {
+  const welcomeTitle = document.getElementById("welcome-title");
+  const userInitial = document.getElementById("user-initial");
+  const userNameDisplay = document.getElementById("user-name-display");
+  const dropdownName = document.getElementById("dropdown-name");
+  const btnLogout = document.getElementById("btn-logout");
+
+  // Éléments de la page Profil
+  const profileName = document.getElementById("profile-name");
+  const profileInitial = document.getElementById("profile-initial");
+  const profileEmail = document.getElementById("profile-email");
+  const profileUid = document.getElementById("profile-uid");
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = "index.html";
+    } else {
+      const pseudo = user.displayName || "Utilisateur";
+      const initial = pseudo.charAt(0).toUpperCase();
+
+      // Topbar & Menu
+      welcomeTitle.textContent = "Tableau de bord"; // Texte par défaut au chargement
+      userInitial.textContent = initial;
+      userNameDisplay.textContent = pseudo;
+      dropdownName.textContent = pseudo;
+
+      // Page Profil
+      if (profileName) profileName.textContent = pseudo;
+      if (profileInitial) profileInitial.textContent = initial;
+      if (profileEmail) profileEmail.textContent = user.email || "Non renseigné";
+      if (profileUid) profileUid.textContent = user.uid;
+    }
+  });
+
+  if (btnLogout) {
+    btnLogout.addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        window.location.href = "index.html";
+      } catch (error) {
+        console.error("Erreur lors de la déconnexion:", error);
+      }
+    });
+  }
+}
