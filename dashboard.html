@@ -3,24 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura Intranet - Accueil</title>
+    <title>Aura Intranet - Tableau de bord</title>
     <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
-    <header class="navbar">
-        <div class="logo">Aura Intranet</div>
-        <div class="user-profile">
-            <span id="user-display-name">Chargement...</span>
-            <button id="btn-logout" class="logout-btn">Déconnexion</button>
+    <!-- Barre latérale de navigation -->
+    <aside class="sidebar">
+        <div>
+            <div class="sidebar__brand">Aura <span>Intranet</span></div>
+            <ul class="sidebar__nav">
+                <li><a href="#" class="sidebar__link is-active">🏠 Accueil</a></li>
+                <li><a href="#" class="sidebar__link">📊 Statistiques</a></li>
+                <li><a href="#" class="sidebar__link">⚙️ Paramètres</a></li>
+            </ul>
         </div>
-    </header>
+        <div style="font-size: 0.8rem; color: #64748b; text-align: center;">
+            Aura v1.0
+        </div>
+    </aside>
 
-    <main class="dashboard-content">
-        <div class="welcome-card">
-            <h1>Bienvenue sur votre espace</h1>
-            <p>Ceci est votre tableau de bord principal. D'autres fonctionnalités arriveront bientôt.</p>
-        </div>
-    </main>
+    <!-- Zone principale -->
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar__title">
+                <h2>Tableau de bord</h2>
+            </div>
+            <div class="user-profile">
+                <div class="user-avatar" id="user-initial">A</div>
+                <div class="user-info">
+                    <span class="user-name" id="user-display-name">Chargement...</span>
+                    <span class="user-role">Membre Intranet</span>
+                </div>
+                <button id="btn-logout" class="logout-btn">Déconnexion</button>
+            </div>
+        </header>
+
+        <main class="content-body">
+            <div class="welcome-banner">
+                <div>
+                    <h1 id="welcome-title">Bonjour !</h1>
+                    <p>Bienvenue sur votre espace sécurisé Aura Intranet. Votre session est active.</p>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Statut du compte</h3>
+                    <div class="value" style="color: #2ecc71; font-size: 1.3rem; margin-top: 5px;">Actif & Sécurisé</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Authentification</h3>
+                    <div class="value" style="color: #5865F2; font-size: 1.3rem; margin-top: 5px;">Firebase Auth</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Environnement</h3>
+                    <div class="value" style="font-size: 1.3rem; margin-top: 5px;">Production</div>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <script type="module" src="./dashboard.js"></script>
 </body>
