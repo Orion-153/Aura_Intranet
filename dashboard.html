@@ -41,13 +41,9 @@
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
           Vue d'ensemble
         </a>
-        <a href="#" class="sidebar__link" data-target="view-documents">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          Ressources
-        </a>
-        <a href="#" class="sidebar__link" data-target="view-directory">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          Membres
+        <a href="#" class="sidebar__link" data-target="view-server">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Serveur
         </a>
       </nav>
     </aside>
@@ -57,7 +53,7 @@
       <header class="topbar card">
         <div>
           <h1 class="card__title" id="welcome-title">Chargement...</h1>
-          <p class="card__subtitle">Bienvenue sur l'espace sécurisé du serveur.</p>
+          <p class="card__subtitle">Bienvenue sur votre espace sécurisé du serveur.</p>
         </div>
         
         <div class="topbar__actions">
@@ -84,20 +80,21 @@
               </div>
               <div class="dropdown-divider"></div>
               
-              <button id="btn-open-profile" class="dropdown-item">Mon Profil</button>
+              <a href="#" class="dropdown-item" id="btn-open-profile">Mon Profil</a>
               <button id="btn-open-settings" class="dropdown-item">Paramètres</button>
 
               <div class="dropdown-divider"></div>
               <button id="btn-logout" class="dropdown-item text-danger">Déconnexion</button>
             </div>
           </div>
+
         </div>
       </header>
 
-      <div class="views-container">
+      <div class="views-container" style="display: flex; flex-direction: column; gap: 0.5rem; flex-grow: 1;">
         
-        <section id="view-dashboard" class="view-section is-active">
-          <div class="stats-grid">
+        <section id="view-dashboard" class="view-section is-active" style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <section class="stats-grid">
             <div class="stat-card card">
               <h3>Statut du compte</h3>
               <div class="stat-value text-success">Actif & Sécurisé</div>
@@ -107,66 +104,28 @@
               <div class="stat-value text-accent">Firebase Auth</div>
             </div>
             <div class="stat-card card">
-              <h3>Dernière connexion</h3>
-              <div class="stat-value">Aujourd'hui</div>
+              <h3>Rôle Discord</h3>
+              <div class="stat-value">Membre</div>
             </div>
-          </div>
-
-          <div class="news-section card" style="margin-top: 1rem;">
-            <h2 class="card__title">📢 Annonces du Serveur</h2>
-            <p class="card__subtitle" style="margin-bottom: 1rem;">Restez informé des dernières nouveautés de la communauté.</p>
-            <div class="news-item">
-              <strong>Mise à jour de l'intranet</strong> - <span>Le nouveau design est en ligne ! Explorez les paramètres pour personnaliser vos couleurs.</span>
-            </div>
-            <div class="news-item" style="margin-top: 0.5rem;">
-              <strong>Événement ce soir</strong> - <span>Rendez-vous en vocal à 21h00 pour la réunion communautaire !</span>
-            </div>
-          </div>
+          </section>
         </section>
 
-        <section id="view-documents" class="view-section">
-          <div class="card">
-            <h2 class="card__title">Ressources Partagées</h2>
-            <p class="card__subtitle">Retrouvez ici les documents et liens utiles du serveur.</p>
-            <div style="padding: 2rem; text-align: center; color: var(--text-muted);">
-              Dossier actuellement vide. Bientôt disponible !
-            </div>
-          </div>
-        </section>
-
-        <section id="view-directory" class="view-section">
-          <div class="card">
+        <section id="view-server" class="view-section" style="display: none;">
+          <div class="card" style="padding: 1.25rem;">
             <h2 class="card__title">Annuaire des membres</h2>
             <p class="card__subtitle">Trouvez et contactez les autres membres du serveur.</p>
-            <div style="padding: 2rem; text-align: center; color: var(--text-muted);">
-              Liste des membres en cours de synchronisation...
-            </div>
           </div>
         </section>
 
-        <section id="view-profile" class="view-section">
-          <div class="card profile-detail-card">
-            <div class="profile-header">
-              <div class="user-avatar large-avatar" id="profile-initial">?</div>
-              <div>
-                <h2 class="card__title" id="profile-name">Nom de l'utilisateur</h2>
-                <p class="card__subtitle">Membre du serveur</p>
-              </div>
-            </div>
-            <div class="profile-info-grid">
-              <div class="info-group">
-                <label>Adresse Email</label>
-                <div class="info-value" id="profile-email">chargement@email.com</div>
-              </div>
-              <div class="info-group">
-                <label>ID Utilisateur</label>
-                <div class="info-value" id="profile-uid">...</div>
-              </div>
-            </div>
+        <section id="view-profile" class="view-section" style="display: none;">
+          <div class="card" style="padding: 1.25rem;">
+            <h2 class="card__title">Mon Profil</h2>
+            <p class="card__subtitle">Informations de votre compte sur le serveur.</p>
           </div>
         </section>
 
       </div>
+
     </main>
   </div>
 
@@ -177,11 +136,11 @@
         <button class="modal-close" id="btn-close-settings">&times;</button>
       </div>
       
-      <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.5rem;">
-        
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.25rem;">
         <div class="settings-section">
           <h3 class="settings-section-title">Personnalisation</h3>
           <p class="card__subtitle">Choisissez la couleur principale de votre interface.</p>
+          
           <div class="theme-colors-grid">
             <button class="color-option is-active" data-color="purple" style="--btn-color: #5B5FEF;">
               <span class="color-preview" style="background: #5B5FEF;"></span>
@@ -207,31 +166,18 @@
         </div>
 
         <div class="settings-section">
-          <h3 class="settings-section-title">Préférences Système</h3>
-          
-          <div class="setting-row">
-            <div>
-              <div style="font-weight: 500; font-size: 0.85rem;">Notifications par email</div>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">Recevoir les alertes importantes</div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" checked>
-              <span class="slider round"></span>
-            </label>
-          </div>
-
-          <div class="setting-row" style="margin-top: 0.5rem;">
+          <h3 class="settings-section-title">Préférences</h3>
+          <div class="setting-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
             <div>
               <div style="font-weight: 500; font-size: 0.85rem;">Mode Compact</div>
               <div style="font-size: 0.75rem; color: var(--text-muted);">Réduire l'espacement de l'interface</div>
             </div>
-            <label class="switch">
-              <input type="checkbox" id="compact-mode-toggle">
-              <span class="slider round"></span>
+            <label class="switch" style="position: relative; display: inline-block; width: 40px; height: 22px; cursor: pointer;">
+              <input type="checkbox" id="compact-mode-toggle" style="opacity: 0; width: 0; height: 0;">
+              <span class="slider" style="position: absolute; cursor: pointer; inset: 0; background-color: var(--border-card); transition: .3s; border-radius: 22px;"></span>
             </label>
           </div>
         </div>
-
       </div>
     </div>
   </div>
