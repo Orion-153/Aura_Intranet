@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initAccentColors();
   initUserMenu();
   initNavigation();
-  initPreferences(); // Initialisation du mode compact
+  initCompactMode();
   initDashboardAuth();
 });
 
@@ -118,11 +118,6 @@ function initAccentColors() {
       localStorage.setItem(STORAGE_KEY, colorName);
     });
   });
-  
-  document.getElementById("theme-toggle")?.addEventListener("click", () => {
-    const currentColor = localStorage.getItem(STORAGE_KEY) || "purple";
-    applyAccentColor(currentColor);
-  });
 }
 
 /* ==========================================================================
@@ -149,7 +144,7 @@ function initUserMenu() {
 }
 
 /* ==========================================================================
-   5) NAVIGATION ENTRE LES VUES
+   5) NAVIGATION ENTRE LES VUES (Sidebar & Dropdown)
    ========================================================================== */
 function initNavigation() {
   const sidebarLinks = document.querySelectorAll(".sidebar__link");
@@ -160,15 +155,20 @@ function initNavigation() {
 
   const viewTitles = {
     "view-dashboard": "Tableau de bord",
-    "view-documents": "Ressources partagées",
-    "view-directory": "Annuaire des membres",
+    "view-server": "Espace Serveur",
     "view-profile": "Mon Profil"
   };
 
   function switchView(targetId) {
-    viewSections.forEach(section => section.classList.remove("is-active"));
-    const targetSection = document.getElementById(targetId);
-    if (targetSection) targetSection.classList.add("is-active");
+    viewSections.forEach(section => {
+      if (section.id === targetId) {
+        section.style.display = "flex";
+        section.classList.add("is-active");
+      } else {
+        section.style.display = "none";
+        section.classList.remove("is-active");
+      }
+    });
 
     sidebarLinks.forEach(link => {
       if (link.dataset.target === targetId) {
@@ -187,7 +187,7 @@ function initNavigation() {
     link.addEventListener("click", (e) => {
       e.preventDefault();
       const targetId = link.dataset.target;
-      switchView(targetId);
+      if (targetId) switchView(targetId);
     });
   });
 
@@ -195,26 +195,24 @@ function initNavigation() {
     btnOpenProfile.addEventListener("click", (e) => {
       e.preventDefault();
       switchView("view-profile");
-      dropdown.classList.remove("is-open");
+      dropdown?.classList.remove("is-open");
     });
   }
 }
 
 /* ==========================================================================
-   6) MODE COMPACT (Préférences)
+   6) MODE COMPACT (Paramètre)
    ========================================================================== */
-function initPreferences() {
+function initCompactMode() {
   const compactToggle = document.getElementById("compact-mode-toggle");
   if (!compactToggle) return;
 
-  // Charger le paramètre depuis le LocalStorage
   const isCompact = localStorage.getItem("intranet-compact") === "true";
   compactToggle.checked = isCompact;
   if (isCompact) {
     document.body.classList.add("compact-mode");
   }
 
-  // Écouter le changement
   compactToggle.addEventListener("change", (e) => {
     if (e.target.checked) {
       document.body.classList.add("compact-mode");
@@ -227,7 +225,7 @@ function initPreferences() {
 }
 
 /* ==========================================================================
-   7) GESTION DE L'AUTHENTIFICATION FIREBASE
+   7) AUTHENTIFICATION FIREBASE
    ========================================================================== */
 function initDashboardAuth() {
   const welcomeTitle = document.getElementById("welcome-title");
@@ -236,27 +234,15 @@ function initDashboardAuth() {
   const dropdownName = document.getElementById("dropdown-name");
   const btnLogout = document.getElementById("btn-logout");
 
-  const profileName = document.getElementById("profile-name");
-  const profileInitial = document.getElementById("profile-initial");
-  const profileEmail = document.getElementById("profile-email");
-  const profileUid = document.getElementById("profile-uid");
-
   onAuthStateChanged(auth, (user) => {
     if (!user) {
       window.location.href = "index.html";
     } else {
       const pseudo = user.displayName || "Utilisateur";
-      const initial = pseudo.charAt(0).toUpperCase();
-
-      welcomeTitle.textContent = "Tableau de bord"; 
-      userInitial.textContent = initial;
+      welcomeTitle.textContent = `Tableau de bord`;
+      userInitial.textContent = pseudo.charAt(0).toUpperCase();
       userNameDisplay.textContent = pseudo;
       dropdownName.textContent = pseudo;
-
-      if (profileName) profileName.textContent = pseudo;
-      if (profileInitial) profileInitial.textContent = initial;
-      if (profileEmail) profileEmail.textContent = user.email || "Non renseigné";
-      if (profileUid) profileUid.textContent = user.uid;
     }
   });
 
