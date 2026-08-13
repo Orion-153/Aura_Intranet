@@ -43,11 +43,11 @@
         </a>
         <a href="#" class="sidebar__link" data-target="view-documents">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          Documents
+          Ressources
         </a>
         <a href="#" class="sidebar__link" data-target="view-directory">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          Annuaire
+          Membres
         </a>
       </nav>
     </aside>
@@ -57,7 +57,7 @@
       <header class="topbar card">
         <div>
           <h1 class="card__title" id="welcome-title">Chargement...</h1>
-          <p class="card__subtitle">Bienvenue sur votre espace sécurisé.</p>
+          <p class="card__subtitle">Bienvenue sur l'espace sécurisé du serveur.</p>
         </div>
         
         <div class="topbar__actions">
@@ -80,7 +80,7 @@
             <div class="user-dropdown" id="user-dropdown">
               <div class="dropdown-header">
                 <p class="dropdown-name" id="dropdown-name">Utilisateur</p>
-                <p class="dropdown-role">Membre Intranet</p>
+                <p class="dropdown-role">Membre du serveur</p>
               </div>
               <div class="dropdown-divider"></div>
               
@@ -113,21 +113,21 @@
           </div>
 
           <div class="news-section card" style="margin-top: 1rem;">
-            <h2 class="card__title">📢 Dernières Annonces</h2>
-            <p class="card__subtitle" style="margin-bottom: 1rem;">Restez informé des nouveautés de l'entreprise.</p>
+            <h2 class="card__title">📢 Annonces du Serveur</h2>
+            <p class="card__subtitle" style="margin-bottom: 1rem;">Restez informé des dernières nouveautés de la communauté.</p>
             <div class="news-item">
               <strong>Mise à jour de l'intranet</strong> - <span>Le nouveau design est en ligne ! Explorez les paramètres pour personnaliser vos couleurs.</span>
             </div>
             <div class="news-item" style="margin-top: 0.5rem;">
-              <strong>Maintenance prévue</strong> - <span>Les serveurs seront redémarrés ce vendredi à 23h00.</span>
+              <strong>Événement ce soir</strong> - <span>Rendez-vous en vocal à 21h00 pour la réunion communautaire !</span>
             </div>
           </div>
         </section>
 
         <section id="view-documents" class="view-section">
           <div class="card">
-            <h2 class="card__title">Documents Partagés</h2>
-            <p class="card__subtitle">Retrouvez ici les ressources de l'entreprise.</p>
+            <h2 class="card__title">Ressources Partagées</h2>
+            <p class="card__subtitle">Retrouvez ici les documents et liens utiles du serveur.</p>
             <div style="padding: 2rem; text-align: center; color: var(--text-muted);">
               Dossier actuellement vide. Bientôt disponible !
             </div>
@@ -137,9 +137,9 @@
         <section id="view-directory" class="view-section">
           <div class="card">
             <h2 class="card__title">Annuaire des membres</h2>
-            <p class="card__subtitle">Trouvez et contactez vos collègues.</p>
+            <p class="card__subtitle">Trouvez et contactez les autres membres du serveur.</p>
             <div style="padding: 2rem; text-align: center; color: var(--text-muted);">
-              Liste des collaborateurs en cours de synchronisation...
+              Liste des membres en cours de synchronisation...
             </div>
           </div>
         </section>
@@ -150,7 +150,7 @@
               <div class="user-avatar large-avatar" id="profile-initial">?</div>
               <div>
                 <h2 class="card__title" id="profile-name">Nom de l'utilisateur</h2>
-                <p class="card__subtitle">Membre Intranet</p>
+                <p class="card__subtitle">Membre du serveur</p>
               </div>
             </div>
             <div class="profile-info-grid">
@@ -226,7 +226,7 @@
               <div style="font-size: 0.75rem; color: var(--text-muted);">Réduire l'espacement de l'interface</div>
             </div>
             <label class="switch">
-              <input type="checkbox">
+              <input type="checkbox" id="compact-mode-toggle">
               <span class="slider round"></span>
             </label>
           </div>
