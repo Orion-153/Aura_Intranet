@@ -6,12 +6,13 @@ import { auth } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  initThemeToggle(); // Reprend le thème du login
+  initThemeToggle();
   initDashboardAuth();
+  initUserMenu(); // Initialise le nouveau menu profil
 });
 
 /* ==========================================================================
-   1) GESTION DU THÈME (Même logique que login.js)
+   1) GESTION DU THÈME
    ========================================================================== */
 function initThemeToggle() {
   const STORAGE_KEY = "intranet-theme";
@@ -26,7 +27,6 @@ function initThemeToggle() {
     }
   };
 
-  // Charge le thème choisi depuis le login
   const savedTheme = localStorage.getItem(STORAGE_KEY);
   if (savedTheme) {
     applyTheme(savedTheme);
@@ -35,7 +35,6 @@ function initThemeToggle() {
     applyTheme(prefersDark ? "dark" : "light");
   }
 
-  // Écouteur sur le bouton du Dashboard
   if (toggleBtn) {
     toggleBtn.addEventListener("click", () => {
       const isDark = root.getAttribute("data-theme") === "dark";
@@ -52,22 +51,24 @@ function initThemeToggle() {
 function initDashboardAuth() {
   const welcomeTitle = document.getElementById("welcome-title");
   const userInitial = document.getElementById("user-initial");
+  const userNameDisplay = document.getElementById("user-name-display");
+  const dropdownName = document.getElementById("dropdown-name");
   const btnLogout = document.getElementById("btn-logout");
 
-  // Vérifie l'état de connexion en temps réel
   onAuthStateChanged(auth, (user) => {
     if (!user) {
-      // Si non connecté, retour forcé au login
       window.location.href = "index.html";
     } else {
-      // Affichage du nom et de l'initiale
       const pseudo = user.displayName || "Utilisateur";
+      
+      // Mise à jour des textes avec le pseudo
       welcomeTitle.textContent = `Bonjour, ${pseudo} !`;
       userInitial.textContent = pseudo.charAt(0).toUpperCase();
+      userNameDisplay.textContent = pseudo;
+      dropdownName.textContent = pseudo;
     }
   });
 
-  // Déconnexion
   if (btnLogout) {
     btnLogout.addEventListener("click", async () => {
       try {
@@ -78,4 +79,30 @@ function initDashboardAuth() {
       }
     });
   }
+}
+
+/* ==========================================================================
+   3) MENU UTILISATEUR DÉROULANT
+   ========================================================================== */
+function initUserMenu() {
+  const menuBtn = document.getElementById("user-menu-btn");
+  const dropdown = document.getElementById("user-dropdown");
+
+  if (!menuBtn || !dropdown) return;
+
+  // Ouvrir / Fermer au clic
+  menuBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); // Évite que le clic ferme immédiatement le menu
+    dropdown.classList.toggle("is-open");
+    const isOpen = dropdown.classList.contains("is-open");
+    menuBtn.setAttribute("aria-expanded", isOpen);
+  });
+
+  // Fermer le menu si on clique en dehors
+  document.addEventListener("click", (e) => {
+    if (dropdown.classList.contains("is-open") && !dropdown.contains(e.target)) {
+      dropdown.classList.remove("is-open");
+      menuBtn.setAttribute("aria-expanded", "false");
+    }
+  });
 }
