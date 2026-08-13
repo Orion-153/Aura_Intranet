@@ -4,51 +4,37 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Intranet — Tableau de bord</title>
-
-  <!-- Polices -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
-  <!-- Feuille de style -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="dashboard.css">
 </head>
-<body>
-
-  <!-- Fond -->
-  <div class="halo" aria-hidden="true"></div>
-  <div class="grid-overlay" aria-hidden="true"></div>
+<body data-theme="dark">
 
   <div class="dashboard-layout">
     
     <!-- Barre latérale -->
-    <aside class="sidebar card" role="navigation">
+    <aside class="sidebar">
       <header class="brand">
-        <span class="brand__mark">
-          <svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true">
-            <rect x="1" y="1" width="30" height="30" rx="9" fill="url(#brandGrad)"/>
-            <path d="M10.5 20.5V11.5L16 15.2 10.5 20.5Z" fill="white" opacity="0.95"/>
-            <path d="M16 15.2 21.5 11.5V20.5L16 15.2Z" fill="white" opacity="0.55"/>
-            <defs>
-              <linearGradient id="brandGrad" x1="1" y1="1" x2="31" y2="31" gradientUnits="userSpaceOnUse">
-                <stop stop-color="var(--accent, #5B5FEF)"/>
-                <stop offset="1" stop-color="var(--accent-gradient, #8B7CF6)"/>
-              </linearGradient>
-            </defs>
-          </svg>
-        </span>
-        <span class="brand__name">Intranet</span>
+        <div class="brand__logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <span class="brand__name">Espace Intranet</span>
       </header>
 
       <nav class="sidebar__nav">
-        <a href="#" class="sidebar__link is-active">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-          Vue d'ensemble
-        </a>
-        <a href="#" class="sidebar__link">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-          Serveur
-        </a>
+        <div class="nav-section">GÉNÉRAL</div>
+        <a href="#" class="nav-link is-active">Vue d'ensemble</a>
+        <a href="#" class="nav-link">Annonces internes</a>
+        <a href="#" class="nav-link">Annuaire de l'équipe</a>
+
+        <div class="nav-section">RESSOURCES</div>
+        <a href="#" class="nav-link">Documents & Guides</a>
+        <a href="#" class="nav-link">Règlement serveur</a>
+        
+        <div class="nav-section">OUTILS</div>
+        <a href="#" class="nav-link">Gestion des tickets</a>
+        <a href="#" class="nav-link">Logs de modération</a>
       </nav>
     </aside>
 
@@ -56,104 +42,179 @@
     <main class="main-content">
       
       <!-- En-tête -->
-      <header class="topbar card">
-        <div>
-          <h1 class="card__title" id="welcome-title">Chargement...</h1>
-          <p class="card__subtitle">Bienvenue sur votre espace sécurisé.</p>
+      <header class="topbar">
+        <div class="topbar__left">
+          <h1 class="page-title">Bonjour, <span id="welcome-name">Membre</span> 👋</h1>
+          <p class="page-subtitle">Voici un résumé de l'activité de votre équipe aujourd'hui.</p>
         </div>
         
         <div class="topbar__actions">
-          <!-- Bouton de thème -->
-          <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Changer de thème">
-            <span class="theme-toggle__track">
-              <span class="theme-toggle__thumb">
-                <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5V5M12 19v2.5M4.6 4.6L6.4 6.4M17.6 17.6l1.8 1.8M2.5 12H5M19 12h2.5M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-              </span>
-            </span>
+          <button id="theme-toggle" class="btn-icon" aria-label="Changer de thème">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
           </button>
           
-          <!-- Menu Utilisateur Cliquable -->
+          <!-- Menu Utilisateur -->
           <div class="user-menu-container">
-            <button class="user-profile-btn" id="user-menu-btn" aria-expanded="false">
+            <button class="user-profile-btn" id="user-menu-btn">
               <span class="user-avatar" id="user-initial">?</span>
-              <span class="user-name" id="user-name-display">Chargement...</span>
-              <svg class="icon-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
             </button>
             
             <div class="user-dropdown" id="user-dropdown">
               <div class="dropdown-header">
                 <p class="dropdown-name" id="dropdown-name">Utilisateur</p>
-                <p class="dropdown-role">Membre Intranet</p>
+                <p class="dropdown-role">Accès Standard</p>
               </div>
               <div class="dropdown-divider"></div>
               
-              <a href="#" class="dropdown-item">Mon Profil</a>
+              <button id="btn-open-profile" class="dropdown-item">Mon Profil</button>
               <button id="btn-open-settings" class="dropdown-item">Paramètres</button>
 
               <div class="dropdown-divider"></div>
               <button id="btn-logout" class="dropdown-item text-danger">Déconnexion</button>
             </div>
           </div>
-
         </div>
       </header>
 
-      <!-- Grille de statistiques -->
-      <section class="stats-grid">
-        <div class="stat-card card">
-          <h3>Statut du compte</h3>
-          <div class="stat-value text-success">Actif & Sécurisé</div>
-        </div>
-        <div class="stat-card card">
-          <h3>Authentification</h3>
-          <div class="stat-value text-accent">Firebase Auth</div>
-        </div>
-        <div class="stat-card card">
-          <h3>Rôle Discord</h3>
-          <div class="stat-value">Membre</div>
-        </div>
-      </section>
+      <div class="content-grid">
+        <!-- Colonne principale -->
+        <div class="main-column">
+          <section class="stats-grid">
+            <div class="stat-card">
+              <h3>Tâches en attente</h3>
+              <div class="stat-value text-accent">12</div>
+            </div>
+            <div class="stat-card">
+              <h3>Tickets ouverts</h3>
+              <div class="stat-value">4</div>
+            </div>
+            <div class="stat-card">
+              <h3>Membres staff actifs</h3>
+              <div class="stat-value text-success">8</div>
+            </div>
+          </section>
 
+          <section class="card section-card">
+            <h2 class="card-title">Dernières communications</h2>
+            <div class="feed-list">
+              <div class="feed-item">
+                <div class="feed-icon" style="background: var(--accent-light); color: var(--accent);">📢</div>
+                <div class="feed-content">
+                  <h4>Mise à jour des règles de modération</h4>
+                  <p>Veuillez consulter le nouveau document dans la section Ressources.</p>
+                  <span class="feed-date">Il y a 2 heures par Admin</span>
+                </div>
+              </div>
+              <div class="feed-item">
+                <div class="feed-icon" style="background: rgba(46, 204, 113, 0.2); color: #2ecc71;">✅</div>
+                <div class="feed-content">
+                  <h4>Maintenance terminée</h4>
+                  <p>Le bot principal est de nouveau opérationnel.</p>
+                  <span class="feed-date">Hier à 18:30 par Système</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Colonne latérale (Raccourcis) -->
+        <div class="side-column">
+          <section class="card section-card">
+            <h2 class="card-title">Raccourcis rapides</h2>
+            <div class="action-buttons">
+              <button class="btn-primary">Créer une annonce</button>
+              <button class="btn-secondary">Ouvrir un ticket interne</button>
+              <button class="btn-secondary">Consulter le planning</button>
+            </div>
+          </section>
+        </div>
+      </div>
     </main>
   </div>
 
-  <!-- FENÊTRE MODALE DES PARAMÈTRES -->
+  <!-- MODALE : PARAMÈTRES -->
   <div class="modal-overlay" id="settings-modal">
-    <div class="modal-card card">
+    <div class="modal-card">
       <div class="modal-header">
-        <h2 class="card__title">Paramètres</h2>
+        <h2>Paramètres de l'Intranet</h2>
         <button class="modal-close" id="btn-close-settings">&times;</button>
       </div>
-      
       <div class="modal-body">
-        <!-- Section Personnalisation -->
-        <div class="settings-section">
-          <h3 class="settings-section-title">Personnalisation</h3>
-          <p class="card__subtitle">Choisissez la couleur principale de votre interface (fond, boutons, éléments).</p>
-          
+        
+        <div class="settings-group">
+          <h3>Personnalisation</h3>
+          <p class="settings-desc">Choisissez la couleur principale de votre interface.</p>
           <div class="theme-colors-grid">
-            <button class="color-option is-active" data-color="purple" style="--btn-color: #5B5FEF;">
-              <span class="color-preview" style="background: #5B5FEF;"></span>
-              <span>Violet Classique</span>
-            </button>
-            <button class="color-option" data-color="blue" style="--btn-color: #3b82f6;">
-              <span class="color-preview" style="background: #3b82f6;"></span>
-              <span>Bleu Océan</span>
-            </button>
-            <button class="color-option" data-color="emerald" style="--btn-color: #10b981;">
-              <span class="color-preview" style="background: #10b981;"></span>
-              <span>Vert Émeraude</span>
-            </button>
-            <button class="color-option" data-color="rose" style="--btn-color: #f43f5e;">
-              <span class="color-preview" style="background: #f43f5e;"></span>
-              <span>Rose Sunset</span>
-            </button>
-            <button class="color-option" data-color="amber" style="--btn-color: #f59e0b;">
-              <span class="color-preview" style="background: #f59e0b;"></span>
-              <span>Ambre Solaire</span>
-            </button>
+            <button class="color-option is-active" data-color="indigo" style="--btn-color: #4f46e5;">Indigo</button>
+            <button class="color-option" data-color="emerald" style="--btn-color: #10b981;">Émeraude</button>
+            <button class="color-option" data-color="rose" style="--btn-color: #e11d48;">Rose</button>
           </div>
+        </div>
+
+        <div class="settings-group">
+          <h3>Préférences</h3>
+          <div class="toggle-row">
+            <div>
+              <h4>Notifications push</h4>
+              <p class="settings-desc">Recevoir des alertes pour les nouvelles annonces.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-notifs" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <h4>Mode Compact</h4>
+              <p class="settings-desc">Réduire la taille des éléments de l'interface.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-compact">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE : MON PROFIL -->
+  <div class="modal-overlay" id="profile-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Mon Profil Utilisateur</h2>
+        <button class="modal-close" id="btn-close-profile">&times;</button>
+      </div>
+      <div class="modal-body profile-body">
+        <div class="profile-header-large">
+          <div class="user-avatar-large" id="profile-avatar">?</div>
+          <div>
+            <h3 id="profile-name">Chargement...</h3>
+            <p id="profile-email" class="text-muted">email@exemple.com</p>
+          </div>
+        </div>
+        
+        <div class="profile-details">
+          <div class="detail-group">
+            <label>Rôle actuel</label>
+            <input type="text" value="Administrateur Intranet" disabled class="input-disabled">
+          </div>
+          <div class="detail-group">
+            <label>Département / Équipe</label>
+            <input type="text" value="Staff Général" disabled class="input-disabled">
+          </div>
+          <div class="detail-group">
+            <label>Statut</label>
+            <select class="custom-select">
+              <option>En ligne</option>
+              <option>Occupé(e)</option>
+              <option>Absent(e)</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-primary" id="btn-save-profile">Enregistrer les modifications</button>
         </div>
       </div>
     </div>
