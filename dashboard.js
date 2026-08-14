@@ -10,8 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initSettingsModal();
   initAccentColors();
   initUserMenu();
-  initNavigation();
-  initCompactMode();
   initDashboardAuth();
 });
 
@@ -70,6 +68,7 @@ function initSettingsModal() {
     modal.classList.remove("is-open");
   });
 
+  // Fermer si on clique en dehors de la carte de paramètres
   modal.addEventListener("click", (e) => {
     if (e.target === modal) {
       modal.classList.remove("is-open");
@@ -78,7 +77,7 @@ function initSettingsModal() {
 }
 
 /* ==========================================================================
-   3) GESTION DE LA COULEUR D'ACCENTUATION
+   3) GESTION DE LA COULEUR D'ACCENTUATION (DANS PARAMÈTRES)
    ========================================================================== */
 function initAccentColors() {
   const STORAGE_KEY = "intranet-accent-color";
@@ -118,6 +117,11 @@ function initAccentColors() {
       localStorage.setItem(STORAGE_KEY, colorName);
     });
   });
+  
+  document.getElementById("theme-toggle")?.addEventListener("click", () => {
+    const currentColor = localStorage.getItem(STORAGE_KEY) || "purple";
+    applyAccentColor(currentColor);
+  });
 }
 
 /* ==========================================================================
@@ -144,88 +148,7 @@ function initUserMenu() {
 }
 
 /* ==========================================================================
-   5) NAVIGATION ENTRE LES VUES (Sidebar & Dropdown)
-   ========================================================================== */
-function initNavigation() {
-  const sidebarLinks = document.querySelectorAll(".sidebar__link");
-  const viewSections = document.querySelectorAll(".view-section");
-  const btnOpenProfile = document.getElementById("btn-open-profile");
-  const dropdown = document.getElementById("user-dropdown");
-  const welcomeTitle = document.getElementById("welcome-title");
-
-  const viewTitles = {
-    "view-dashboard": "Tableau de bord",
-    "view-server": "Espace Serveur",
-    "view-profile": "Mon Profil"
-  };
-
-  function switchView(targetId) {
-    viewSections.forEach(section => {
-      if (section.id === targetId) {
-        section.style.display = "flex";
-        section.classList.add("is-active");
-      } else {
-        section.style.display = "none";
-        section.classList.remove("is-active");
-      }
-    });
-
-    sidebarLinks.forEach(link => {
-      if (link.dataset.target === targetId) {
-        link.classList.add("is-active");
-      } else {
-        link.classList.remove("is-active");
-      }
-    });
-
-    if (viewTitles[targetId]) {
-      welcomeTitle.textContent = viewTitles[targetId];
-    }
-  }
-
-  sidebarLinks.forEach(link => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      const targetId = link.dataset.target;
-      if (targetId) switchView(targetId);
-    });
-  });
-
-  if (btnOpenProfile) {
-    btnOpenProfile.addEventListener("click", (e) => {
-      e.preventDefault();
-      switchView("view-profile");
-      dropdown?.classList.remove("is-open");
-    });
-  }
-}
-
-/* ==========================================================================
-   6) MODE COMPACT (Paramètre)
-   ========================================================================== */
-function initCompactMode() {
-  const compactToggle = document.getElementById("compact-mode-toggle");
-  if (!compactToggle) return;
-
-  const isCompact = localStorage.getItem("intranet-compact") === "true";
-  compactToggle.checked = isCompact;
-  if (isCompact) {
-    document.body.classList.add("compact-mode");
-  }
-
-  compactToggle.addEventListener("change", (e) => {
-    if (e.target.checked) {
-      document.body.classList.add("compact-mode");
-      localStorage.setItem("intranet-compact", "true");
-    } else {
-      document.body.classList.remove("compact-mode");
-      localStorage.setItem("intranet-compact", "false");
-    }
-  });
-}
-
-/* ==========================================================================
-   7) AUTHENTIFICATION FIREBASE
+   5) GESTION DE L'AUTHENTIFICATION FIREBASE
    ========================================================================== */
 function initDashboardAuth() {
   const welcomeTitle = document.getElementById("welcome-title");
@@ -239,7 +162,7 @@ function initDashboardAuth() {
       window.location.href = "index.html";
     } else {
       const pseudo = user.displayName || "Utilisateur";
-      welcomeTitle.textContent = `Tableau de bord`;
+      welcomeTitle.textContent = `Bonjour, ${pseudo} !`;
       userInitial.textContent = pseudo.charAt(0).toUpperCase();
       userNameDisplay.textContent = pseudo;
       dropdownName.textContent = pseudo;
